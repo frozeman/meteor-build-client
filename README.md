@@ -28,8 +28,8 @@ If you want to provide a custom template for the initial HTML provide an HTML fi
 
     $ meteor-build-client -t ../myTemplate.html
 
-The template file need to contain 3 placholders: `{{> head}}`, `{{> css}}` and `{{> scripts}}`.
-See the following example, which adds a simepl loading text to the HTML file:
+The template file need to contain the following placholders: `{{> head}}`, `{{> css}}` and `{{> scripts}}`.
+The following example adds a simple loading text to the initial HTML file (Your app should later take care of removing the loading text):
 
 ```html
 <!DOCTYPE html>
@@ -46,13 +46,13 @@ See the following example, which adds a simepl loading text to the HTML file:
     </body>
 </html>
 ```
-By linking a file from your `public` folder (e.g. `loadingScreen.css`) and moving the `{{> css}}` and `{{> scripts}}` placeholder top the end of the body
+By linking a file from your `public` folder (e.g. `loadingScreen.css`) and moving the `{{> css}}` and `{{> scripts}}` placeholder to the end of the `&lt;body&gt;` tag,
 you can simply style your loading screen.
-As the small CSS file and the body content will be loaded before the Meteor app script is loaded.
+Because the small CSS file (`loadingScreen.css`) and the body content will be loaded *before* the Meteor app script is loaded.
 
 ## Connecting to a Meteor server
 
-In order to connect to a Meteor servers DDP connection you can use `DDP.connect()` as seen in the following example:
+In order to connect to a Meteor servers, create DDP connection by using `DDP.connect()`, as seen in the following example:
 
 ```js
 DDPConnection = (Meteor.isClient) ? DDP.connect('http://localhost:3000/') : {};
