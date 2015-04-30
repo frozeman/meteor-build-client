@@ -124,7 +124,7 @@ module.exports = {
         // add the meteor runtime config
         settings = {
             'meteorRelease': starJson.meteorRelease,
-            'ROOT_URL': program.server || '',
+            'ROOT_URL': program.url || '',
             'ROOT_URL_PATH_PREFIX': '',
             'DDP_DEFAULT_CONNECTION_URL': program.ddp || '',
             'appId': process.env.APP_ID || null,
