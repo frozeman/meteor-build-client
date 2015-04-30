@@ -24,10 +24,10 @@ Additionally you can set the `ROOT_URL` of app using the `--url` or `-u` option:
 
 The output will be a folder as follows:
 
-- index.html
-- a28817fe16898311635fa73b959979157e830a31.css
-- aeca2a21c383327235a08d55994243a9f478ed57.js
-- ... (other files from you public folder)
+- `index.html`
+- `a28817fe16898311635fa73b959979157e830a31.css`
+- `aeca2a21c383327235a08d55994243a9f478ed57.js`
+- `...` (other files from you public folder)
 
 ## Using custom templates
 
