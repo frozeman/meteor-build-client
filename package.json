@@ -1,6 +1,6 @@
 {
   "name": "meteor-build-client",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "A bundles the client part of a Meteor app.",
   "author": "Fabian Vogelsteller <fabian@frozeman.de>",
   "contributors": [
@@ -14,10 +14,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/frozeman/npm-meteor-client-only"
+    "url": "https://github.com/frozeman/meteor-build-client"
   },
   "bugs": {
-    "url": "https://github.com/frozeman/npm-meteor-client-only/issues"
+    "url": "https://github.com/frozeman/meteor-build-client/issues"
   },
   "keywords": [
     "meteor",
