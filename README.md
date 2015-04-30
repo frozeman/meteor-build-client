@@ -2,6 +2,8 @@
 
 # Meteor Build Client
 
+[![Join the chat at https://gitter.im/frozeman/meteor-build-client](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/frozeman/meteor-build-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This tool builds and bundles the client part of a Meteor app with a simple index.html,
 so it can be hosted on any server or even loaded via the `file://` protocol.
 
