@@ -46,7 +46,7 @@ The following example adds a simple loading text to the initial HTML file (Your 
     </body>
 </html>
 ```
-By linking a file from your `public` folder (e.g. `loadingScreen.css`) and moving the `{{> css}}` and `{{> scripts}}` placeholder to the end of the `&lt;body&gt;` tag,
+By linking a file from your `public` folder (e.g. `loadingScreen.css`) and moving the `{{> css}}` and `{{> scripts}}` placeholder to the end of the `<body>` tag,
 you can simply style your loading screen.
 Because the small CSS file (`loadingScreen.css`) and the body content will be loaded *before* the Meteor app script is loaded.
 
