@@ -11,9 +11,6 @@ so it can be hosted on any server or even loaded via the `file://` protocol.
 
     $ [sudo] npm install -g meteor-build-client
 
-    // For all options see
-    $ meteor-build-client --help
-
 ## Usage
 
     // cd into you meteor app
@@ -25,6 +22,9 @@ so it can be hosted on any server or even loaded via the `file://` protocol.
 Additionally you can set the `ROOT_URL` of app using the `--url` or `-u` option:
 
     $ meteor-build-client ../myOutputFolder -u http://myserver.com
+
+    // For all options see
+    $ meteor-build-client --help
 
 The content of the output folder could look as follows:
 
