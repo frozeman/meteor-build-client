@@ -17,6 +17,7 @@ var meteor = require('./meteor.js');
 
 program
     .version(packageJson.version)
+    .usage('<output path> [options]')
     .option('-t, --template <file path>', 'Provide a custom index.html template. Use {{> head}}, {{> css}} and {{> scripts}} to place the meteor resources.')
     .option('-u, --url <url>', 'The Root URL of your app.')
     // .option('-d, --ddp <url>', 'The URL of your Meteor DDP server, e.g. "ddp+sockjs://ddp.myapp.com/sockjs". If you don\'t add any it will also add call "Meteor.disconnect();" to prevent the app from conneting.')

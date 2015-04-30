@@ -70,20 +70,24 @@ module.exports = {
     },
     move: function(callback){
 
-        _.each([
-            '/bundle/programs/web.browser',
-            '/bundle/programs/web.browser/app'
-        ], function(givenPath){
-            var clientPath = path.join(buildPath, givenPath);
-            var rootFolder = fs.readdirSync(clientPath);
-            rootFolder = _.without(rootFolder, 'app');
+        try {
+            _.each([
+                '/bundle/programs/web.browser',
+                '/bundle/programs/web.browser/app'
+            ], function(givenPath){
+                var clientPath = path.join(buildPath, givenPath);
+                var rootFolder = fs.readdirSync(clientPath);
+                rootFolder = _.without(rootFolder, 'app');
 
-            rootFolder.forEach( function (file) {
-                var curSource = path.join(clientPath, file);
+                rootFolder.forEach( function (file) {
+                    var curSource = path.join(clientPath, file);
 
-                fs.renameSync(path.join(clientPath, file), path.join(buildPath, file));
+                    fs.renameSync(path.join(clientPath, file), path.join(buildPath, file));
+                });
             });
-        });
+        } catch(e) {
+            
+        }
 
         callback();
     },
