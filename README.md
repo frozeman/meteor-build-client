@@ -37,7 +37,7 @@ The content of the output folder could look as follows:
 
 If you want to provide a custom template for the initial HTML provide an HTML file with the `--template` or `-t` option:
 
-    $ meteor-build-client -t ../myTemplate.html
+    $ meteor-build-client ../myOutputFolder -t ../myTemplate.html
 
 The template file need to contain the following placholders: `{{> head}}`, `{{> css}}` and `{{> scripts}}`.
 The following example adds a simple loading text to the initial HTML file (Your app should later take care of removing the loading text):
