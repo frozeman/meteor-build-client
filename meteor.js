@@ -6,7 +6,7 @@ var spinner = require('simple-spinner');
 
 // VARIABLES
 var argPath = process.argv[2],
-    basePath = './app/',
+    basePath = './',
     buildPath = basePath + argPath;
 
 // execute shell scripts

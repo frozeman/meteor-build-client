@@ -24,6 +24,8 @@ program
 
 
 // RUN TASKS
+
+// TODO: get meteor apps basepath and set it as cwd
 // console.log(process.cwd());
 // process.chdir('new cwd')
 
