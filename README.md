@@ -22,6 +22,13 @@ Additionally you can set the `ROOT_URL` of app using the `--url` or `-u` option:
 
     $ meteor-build-client ../myOutputFolder -u http://myserver.com
 
+The output will be a folder as follows:
+
+- index.html
+- a28817fe16898311635fa73b959979157e830a31.css
+- aeca2a21c383327235a08d55994243a9f478ed57.js
+- ... (other files from you public folder)
+
 ## Using custom templates
 
 If you want to provide a custom template for the initial HTML provide an HTML file with the `--template` or `-t` option:
