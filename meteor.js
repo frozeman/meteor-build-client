@@ -50,8 +50,6 @@ var deleteFolderRecursive = function(path) {
 
 module.exports = {
     build: function(callback){
-        console.log('Building your app...');
-
         // remove the bundle folder
         deleteFolderRecursive(buildPath);
 
@@ -59,8 +57,6 @@ module.exports = {
     },
     unpack: function(callback){
         var targz = require('tar.gz');
-
-        console.log('Extracting the bundle...');
 
         spinner.start();
         new targz().extract(buildPath +'/app.tar.gz', buildPath, function(err){
@@ -73,7 +69,6 @@ module.exports = {
         });
     },
     move: function(callback){
-        console.log('Moving files into place...');
 
         _.each([
             '/bundle/programs/web.browser',
@@ -93,11 +88,9 @@ module.exports = {
         callback();
     },
     addIndexFile: function(program, callback){
-        var starJson = require(buildPath + '/bundle/star.json');
+        var starJson = require(path.resolve(buildPath) + '/bundle/star.json');
 
-        console.log('Creating the index.html...');
-
-        var content = fs.readFileSync(program.template || path.dirname(process.argv[1]) + '/index.html', {encoding: 'utf-8'});
+        var content = fs.readFileSync(program.template || path.resolve(__dirname, 'index.html'), {encoding: 'utf-8'});
         var head = fs.readFileSync(path.join(buildPath, 'head.html'), {encoding: 'utf8'});
 
         // ADD HEAD
@@ -150,9 +143,6 @@ module.exports = {
         fs.unlinkSync(path.join(buildPath, 'program.json'));
         fs.unlinkSync(path.join(buildPath, 'app.tar.gz'));
         fs.unlinkSync(path.join(buildPath, 'head.html'));
-
-        console.log('Done!');
-        console.log('Go to "'+ path.resolve(buildPath) +'" and check your files :)');
 
         callback();
     }

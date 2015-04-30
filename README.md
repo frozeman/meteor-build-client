@@ -10,6 +10,9 @@ so it can be hosted on any server or even loaded via the `file://` protocol.
 
     $ [sudo] npm install -g meteor-build-client
 
+    // For all options see
+    $ meteor-build-client --help
+
 ## Usage
 
     // cd into you meteor app
