@@ -13,7 +13,7 @@ so it can be hosted on any server or even loaded via the `file://` protocol.
 
 ## Usage
 
-    // cd into you meteor app
+    // cd into your meteor app
     $ cd myApp
 
     // run meteor-build-client
