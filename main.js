@@ -39,6 +39,17 @@ if(!argPath) {
 
     (function(){
 
+        // check if in meteor folder
+        try {
+            if(!fs.lstatSync('./.meteor').isDirectory())
+                throw new Error();
+            
+        } catch(e) {
+            console.error('You\'re not in a Meteor app folder or inside a sub folder of your app.');
+            return;  
+        }
+
+        // check template file
         if(program.template) {
             try {
                 if(!fs.lstatSync(program.template).isFile())
