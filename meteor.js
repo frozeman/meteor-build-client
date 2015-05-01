@@ -18,15 +18,16 @@ var execute = function(command, name, complete) {
     spinner.start();
     exec(command, {
         cwd: basePath
-    },function(err) {
+    },function(err, res) {
         spinner.stop();
 
         //process error
         if(err){
-          completeFunc('Could not ' + name);
+            console.log(err.message);
+            completeFunc(err);
 
         } else {
-          completeFunc();
+            completeFunc();
         }
     });
 };
@@ -86,7 +87,7 @@ module.exports = {
                 });
             });
         } catch(e) {
-            
+
         }
 
         callback();
@@ -108,6 +109,22 @@ module.exports = {
             if(/^[a-z0-9]{40}\.js$/.test(file))
                 files['js'] = file;
         });
+
+        // MAKE PATHS ABSOLUTE
+        if(_.isString(program.path)) {
+
+            // fix paths in the CSS file
+            var cssFile = fs.readFileSync(path.join(buildPath, files['css']), {encoding: 'utf8'});
+            cssFile = cssFile.replace(/url\(\'\//g, 'url(\''+ program.path).replace(/url\(\//g, 'url('+ program.path);
+            fs.unlinkSync(path.join(buildPath, files['css']));
+            fs.writeFileSync(path.join(buildPath, files['css']), cssFile, {encoding: 'utf8'});
+
+            files['css'] = program.path + files['css'];
+            files['js'] = program.path + files['js'];
+        } else {
+            files['css'] = '/'+ files['css'];
+            files['js'] = '/'+ files['js'];
+        }
 
 
         // ADD CSS
