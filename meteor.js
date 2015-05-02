@@ -7,7 +7,8 @@ var spinner = require('simple-spinner');
 // VARIABLES
 var argPath = process.argv[2],
     basePath = './',
-    buildPath = basePath + argPath;
+    buildPath = basePath + argPath,
+    bundleName = path.basename(path.resolve(basePath));
 
 // execute shell scripts
 var execute = function(command, name, complete) {
@@ -60,7 +61,7 @@ module.exports = {
         var targz = require('tar.gz');
 
         spinner.start();
-        new targz().extract(buildPath +'/app.tar.gz', buildPath, function(err){
+        new targz().extract(path.join(buildPath, bundleName +'.tar.gz'), buildPath, function(err){
             spinner.stop();
 
             if(err)
@@ -162,7 +163,7 @@ module.exports = {
         // remove files
         deleteFolderRecursive(path.join(buildPath, 'bundle'));
         fs.unlinkSync(path.join(buildPath, 'program.json'));
-        fs.unlinkSync(path.join(buildPath, 'app.tar.gz'));
+        fs.unlinkSync(path.join(buildPath, bundleName +'.tar.gz'));
         fs.unlinkSync(path.join(buildPath, 'head.html'));
 
         callback();
