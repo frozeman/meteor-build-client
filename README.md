@@ -21,7 +21,7 @@ so it can be hosted on any server or even loaded via the `file://` protocol.
 
 ### App URL
 
-Additionally you can set the `ROOT_URL` of app using the `--url` or `-u` option:
+Additionally you can set the `ROOT_URL` of your app using the `--url` or `-u` option:
 
     $ meteor-build-client ../myOutputFolder -u http://myserver.com
 
