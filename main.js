@@ -21,6 +21,7 @@ program
     .option('-t, --template <file path>', 'Provide a custom index.html template. Use {{> head}}, {{> css}} and {{> scripts}} to place the meteor resources.')
     .option('-u, --url <url>', 'The Root URL of your app.')
     .option('-p, --path <path>', 'The path to link the files, default is "/"')
+    .option('-s, --settings <settings.json>', 'Set optional data for the initial value of Meteor.settings in your application.')
     // .option('-d, --ddp <url>', 'The URL of your Meteor DDP server, e.g. "ddp+sockjs://ddp.myapp.com/sockjs". If you don\'t add any it will also add call "Meteor.disconnect();" to prevent the app from conneting.')
     .parse(process.argv);
 
@@ -64,13 +65,7 @@ if(!argPath) {
         // build meteor
         queue.add(function(callback){
             console.log('Bundling app with Meteor...');
-            meteor.build(callback);
-        });
-
-        // unpack the bundle
-        queue.add(function(callback){
-            console.log('Extracting the bundle...');
-            meteor.unpack(callback);
+            meteor.build(program, callback);
         });
 
         // move the files into the build folder

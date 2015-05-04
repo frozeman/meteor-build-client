@@ -51,24 +51,21 @@ var deleteFolderRecursive = function(path) {
 
 
 module.exports = {
-    build: function(callback){
+    build: function(program, callback){
         // remove the bundle folder
         deleteFolderRecursive(buildPath);
 
-        execute('meteor build '+ argPath, 'build the app, are you in your meteor apps folder?', callback);
-    },
-    unpack: function(callback){
-        var targz = require('tar.gz');
+        var command = 'meteor build '+ argPath + ' --directory';
 
-        spinner.start();
-        new targz().extract(path.join(buildPath, bundleName +'.tar.gz'), buildPath, function(err){
-            spinner.stop();
+        if(program.url)
+             command += ' --server '+ program.url;
 
-            if(err)
-                console.log(err);
+         if(program.settings)
+             command += ' --mobile-settings '+ program.settings;
 
-            callback();
-        });
+         // console.log('Running: '+ command);
+
+        execute(command, 'build the app, are you in your meteor apps folder?', callback);
     },
     move: function(callback){
 
@@ -141,7 +138,7 @@ module.exports = {
             'meteorRelease': starJson.meteorRelease,
             'ROOT_URL': program.url || '',
             'ROOT_URL_PATH_PREFIX': '',
-            'DDP_DEFAULT_CONNECTION_URL': program.ddp || '',
+            // 'DDP_DEFAULT_CONNECTION_URL': program.ddp || '',
             'appId': process.env.APP_ID || null,
             'autoupdateVersion': null, // "ecf7fcc2e3d4696ea099fdd287dfa56068a692ec"
             'autoupdateVersionRefreshable': null, // "c5600e68d4f2f5b920340f777e3bfc4297127d6e"
@@ -163,7 +160,6 @@ module.exports = {
         // remove files
         deleteFolderRecursive(path.join(buildPath, 'bundle'));
         fs.unlinkSync(path.join(buildPath, 'program.json'));
-        fs.unlinkSync(path.join(buildPath, bundleName +'.tar.gz'));
         fs.unlinkSync(path.join(buildPath, 'head.html'));
 
         callback();
