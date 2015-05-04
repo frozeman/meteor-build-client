@@ -25,7 +25,7 @@ Additionally you can set the `ROOT_URL` of app using the `--url` or `-u` option:
 
     $ meteor-build-client ../myOutputFolder -u http://myserver.com
 
-### Absolute or realtive paths
+### Absolute or relative paths
 
 If you want to be able to start you app by simply opening the index.html (using the `file://` protocol),
 you need to link your files relative. You can do this by setting the `--path` or `-p` option:
