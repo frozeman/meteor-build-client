@@ -60,8 +60,8 @@ module.exports = {
         if(program.url)
              command += ' --server '+ program.url;
 
-         if(program.settings)
-             command += ' --mobile-settings '+ program.settings;
+         // if(program.settings)
+         //     command += ' --mobile-settings '+ program.settings;
 
          // console.log('Running: '+ command);
 
@@ -92,6 +92,7 @@ module.exports = {
     },
     addIndexFile: function(program, callback){
         var starJson = require(path.resolve(buildPath) + '/bundle/star.json');
+        var settingsJson = program.settings ? require(path.resolve(program.settings)) : {};
 
         var content = fs.readFileSync(program.template || path.resolve(__dirname, 'index.html'), {encoding: 'utf-8'});
         var head = fs.readFileSync(path.join(buildPath, 'head.html'), {encoding: 'utf8'});
@@ -138,16 +139,19 @@ module.exports = {
             'meteorRelease': starJson.meteorRelease,
             'ROOT_URL': program.url || '',
             'ROOT_URL_PATH_PREFIX': '',
-            // 'DDP_DEFAULT_CONNECTION_URL': program.ddp || '',
-            'appId': process.env.APP_ID || null,
-            'autoupdateVersion': null, // "ecf7fcc2e3d4696ea099fdd287dfa56068a692ec"
-            'autoupdateVersionRefreshable': null, // "c5600e68d4f2f5b920340f777e3bfc4297127d6e"
-            'autoupdateVersionCordova': null
+            // 'DDP_DEFAULT_CONNECTION_URL': program.url || '', // will reload infinite if Meteor.disconnect is not called
+            // 'appId': process.env.APP_ID || null,
+            // 'autoupdateVersion': null, // "ecf7fcc2e3d4696ea099fdd287dfa56068a692ec"
+            // 'autoupdateVersionRefreshable': null, // "c5600e68d4f2f5b920340f777e3bfc4297127d6e"
+            // 'autoupdateVersionCordova': null
         };
+        if(settingsJson.public)
+            settings.PUBLIC_SETTINGS = settingsJson.public;
+
         scripts = scripts.replace('__meteor_runtime_config__', '<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(settings))+'"));</script>');
         
         // add Meteor.disconnect() when no server is given
-        if(!program.ddp)
+        // if(!program.ddp)
             scripts += '        <script type="text/javascript">Meteor.disconnect();</script>';
 
         content = content.replace(/{{ *> *scripts *}}/, scripts);

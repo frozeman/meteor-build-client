@@ -19,6 +19,28 @@ so it can be hosted on any server or even loaded via the `file://` protocol.
     // run meteor-build-client
     $ meteor-build-client ../myOutputFolder
 
+### Output
+
+The content of the output folder could look as follows:
+
+- `index.html`
+- `a28817fe16898311635fa73b959979157e830a31.css`
+- `aeca2a21c383327235a08d55994243a9f478ed57.js`
+- `...` (other files from your "public" folder)
+
+For a list of options see:
+
+    $ meteor-build-client --help
+
+### Passing a settings.json
+
+You can pass an additional settings file using the `--settings` or `-s` option:
+
+    $ meteor-build-client ../myOutputFolder -s ../settings.json
+
+**Note** Only the `public` property of that JSON file will be add to the `Meteor.settings` property.
+
+
 ### App URL
 
 Additionally you can set the `ROOT_URL` of your app using the `--url` or `-u` option:
@@ -36,20 +58,7 @@ The default path value is `"/"`.
 
 *Note* When set a path value, it will also replace this path in you Meteor CSS file, so that fonts etc link correctly.
 
-For a list of options see:
-
-    $ meteor-build-client --help
-
-### Output
-
-The content of the output folder could look as follows:
-
-- `index.html`
-- `a28817fe16898311635fa73b959979157e830a31.css`
-- `aeca2a21c383327235a08d55994243a9f478ed57.js`
-- `...` (other files from your public folder)
-
-## Using custom templates
+### Using custom templates
 
 If you want to provide a custom template for the initial HTML provide an HTML file with the `--template` or `-t` option:
 
