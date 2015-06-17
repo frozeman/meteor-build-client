@@ -91,18 +91,20 @@ Because the small CSS file (`loadingScreen.css`) and the body content will be lo
 In order to connect to a Meteor servers, create DDP connection by using `DDP.connect()`, as seen in the following example:
 
 ```js
-DDPConnection = (Meteor.isClient) ? DDP.connect('http://localhost:3000/') : {};
+// This Should be in both server and client in a lib folder
+DDPConnection = (Meteor.isClient) ? DDP.connect("http://localhost:3000/") : {};
 
+// When creating a new collection on the client use:
 if(Meteor.isClient) {
+    posts = new Mongo.Collection("posts", DDPConnection);
+
     // set the new DDP connection to all internal packages, which require one
     Meteor.connection = DDPConnection;
     Accounts.connection = Meteor.connection;
     Meteor.users = new Mongo.Collection('users');
     Meteor.connection.subscribe('users');
-}
 
-// When creating a collection use:
-posts = new Mongo.Collection("posts", DDPConnection);
-// And to subscribe use the DDP connection
-DDPConnection.subscribe("mySubscription");
+    // And then you subscribe like this:
+    DDPConnection.subscribe("mySubscription”);   
+}
 ```
