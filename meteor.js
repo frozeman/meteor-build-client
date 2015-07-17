@@ -95,8 +95,13 @@ module.exports = {
         var settingsJson = program.settings ? require(path.resolve(program.settings)) : {};
 
         var content = fs.readFileSync(program.template || path.resolve(__dirname, 'index.html'), {encoding: 'utf-8'});
-        var head = fs.readFileSync(path.join(buildPath, 'head.html'), {encoding: 'utf8'});
-
+        var head;
+        try{
+            head = fs.readFileSync(path.join(buildPath, 'head.html'), {encoding: 'utf8'});
+        } catch(e) {
+            head = '';
+            console.log('No <head> found in Meteor app...');
+        }
         // ADD HEAD
         content = content.replace(/{{ *> *head *}}/,head);
 
@@ -164,8 +169,11 @@ module.exports = {
         // remove files
         deleteFolderRecursive(path.join(buildPath, 'bundle'));
         fs.unlinkSync(path.join(buildPath, 'program.json'));
-        fs.unlinkSync(path.join(buildPath, 'head.html'));
-
+        try{
+            fs.unlinkSync(path.join(buildPath, 'head.html'));
+        } catch (e){
+            console.log("Didn't unlink head.html; doesn't exist.");
+        }
         callback();
     }
 }
