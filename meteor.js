@@ -51,7 +51,9 @@ var deleteFolderRecursive = function(path) {
 
 
 module.exports = {
-    build: function(program, callback){
+    build: function(program, callback, remove){
+        if (typeof remove === 'undefined') remove = true;
+
         // remove the bundle folder
         deleteFolderRecursive(buildPath);
 
@@ -149,7 +151,7 @@ module.exports = {
             settings.PUBLIC_SETTINGS = settingsJson.public;
 
         scripts = scripts.replace('__meteor_runtime_config__', '<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(settings))+'"));</script>');
-        
+
         // add Meteor.disconnect() when no server is given
         // if(!program.ddp)
             scripts += '        <script type="text/javascript">Meteor.disconnect();</script>';
