@@ -72,10 +72,10 @@ module.exports = {
         if(program.url)
              command += ' --server '+ program.url;
 
-        if(program.settings)
-            command += ' --mobile-settings '+ program.settings;
+        // if(program.settings)
+        //     command += ' --mobile-settings '+ program.settings;
 
-        console.log('Running: '+ command);
+        // console.log('Running: '+ command);
 
         execute(command, 'build the app, are you in your meteor apps folder?', callback);
     },
