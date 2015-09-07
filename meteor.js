@@ -51,12 +51,20 @@ var deleteFolderRecursive = function(path) {
 
 
 module.exports = {
-    build: function(program, callback, remove){
+    build: function(program, remove, callback){
         if (typeof remove === 'undefined') remove = true;
 
         if (remove) {
             // remove the bundle folder
             deleteFolderRecursive(buildPath);
+        } else {
+            // just delete .css, .map, .js and .html
+            var command  = 'rm -f ' + argPath + '*.js ';
+                command += argPath + '*.css ';
+                command += argPath + '*.html ';
+                command += argPath + '*.map';
+
+            execute(command, 'removing previous build files');
         }
 
         var command = 'meteor build '+ argPath + ' --directory';

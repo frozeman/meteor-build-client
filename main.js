@@ -70,7 +70,7 @@ if(!argPath) {
             var dest = fs.realpathSync(path.resolve(argPath));
             var remove = origin.indexOf(dest) == -1;
 
-            meteor.build(program, callback, remove);
+            meteor.build(program, remove, callback);
         });
 
         // move the files into the build folder
