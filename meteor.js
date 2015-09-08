@@ -10,6 +10,19 @@ var argPath = process.argv[2],
     buildPath = basePath + argPath,
     bundleName = path.basename(path.resolve(basePath));
 
+// HELPERS
+var _ = {
+    endsWith: function(str, arr) {
+        for (var i = arr.length - 1; i >= 0; i--) {
+            if (str.indexOf(arr[i], str.length - arr[i].length) !== -1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+};
+
 // execute shell scripts
 var execute = function(command, name, complete) {
     var exec = require('child_process').exec;
@@ -49,6 +62,20 @@ var deleteFolderRecursive = function(path) {
     }
 };
 
+var deleteBuildFiles = function(buildPath) {
+    var files = [];
+    if (fs.existsSync(buildPath)) {
+        files = fs.readdirSync(buildPath);
+        files.forEach(function (file, index) {
+            var curPath = buildPath + "/" + file;
+            if (_.endsWith(file, ['.css', '.html', '.map', '.js'])) {
+                console.log('deleting ' + path.resolve(curPath));
+                fs.unlinkSync(curPath);
+            }
+        });
+    }
+}
+
 
 module.exports = {
     build: function(program, remove, callback){
@@ -58,13 +85,8 @@ module.exports = {
             // remove the bundle folder
             deleteFolderRecursive(buildPath);
         } else {
-            // just delete .css, .map, .js and .html
-            var command  = 'rm -f ' + argPath + '*.js ';
-                command += argPath + '*.css ';
-                command += argPath + '*.html ';
-                command += argPath + '*.map';
-
-            execute(command, 'removing previous build files');
+            // remove previous build files only
+            deleteBuildFiles(buildPath);
         }
 
         var command = 'meteor build '+ argPath + ' --directory';
