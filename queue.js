@@ -24,7 +24,6 @@ module.exports = function() {
   };
 
   self.next = function(text) {
-    console.log('length of invocakations: ' + invokations.length);
     if (text) {
       self.reset();
       console.log(' ' + text.red);

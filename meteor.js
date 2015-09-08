@@ -11,7 +11,7 @@ var argPath = process.argv[2],
     bundleName = path.basename(path.resolve(basePath));
 
 // HELPERS
-var _ = {
+var helpers = {
     endsWith: function(str, arr) {
         for (var i = arr.length - 1; i >= 0; i--) {
             if (str.indexOf(arr[i], str.length - arr[i].length) !== -1) {
@@ -68,8 +68,7 @@ var deleteBuildFiles = function(buildPath) {
         files = fs.readdirSync(buildPath);
         files.forEach(function (file, index) {
             var curPath = buildPath + "/" + file;
-            if (_.endsWith(file, ['.css', '.html', '.map', '.js'])) {
-                console.log('deleting ' + path.resolve(curPath));
+            if (helpers.endsWith(file, ['.css', '.html', '.map', '.js'])) {
                 fs.unlinkSync(curPath);
             }
         });
