@@ -47,6 +47,10 @@ Additionally you can set the `ROOT_URL` of your app using the `--url` or `-u` op
 
     $ meteor-build-client ../myOutputFolder -u http://myserver.com
 
+If you pass `"default"`, your app will try to connect to the server where the application was served from.
+
+If this option was not set, it will set the server to `""` (empty string) and will add a `Meteor.disconnect()` after Meteor was loaded.
+
 ### Absolute or relative paths
 
 If you want to be able to start you app by simply opening the index.html (using the `file://` protocol),

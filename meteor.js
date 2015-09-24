@@ -137,7 +137,6 @@ module.exports = {
         // add the meteor runtime config
         settings = {
             'meteorRelease': starJson.meteorRelease,
-            'ROOT_URL': program.url || '',
             'ROOT_URL_PATH_PREFIX': '',
             // 'DDP_DEFAULT_CONNECTION_URL': program.url || '', // will reload infinite if Meteor.disconnect is not called
             // 'appId': process.env.APP_ID || null,
@@ -145,13 +144,18 @@ module.exports = {
             // 'autoupdateVersionRefreshable': null, // "c5600e68d4f2f5b920340f777e3bfc4297127d6e"
             // 'autoupdateVersionCordova': null
         };
+        // on url = "default", we dont set the ROOT_URL, so Meteor chooses the app serving url for its DDP connection
+        if(program.url !== 'default')
+            settings.ROOT_URL = program.url || '';
+
+
         if(settingsJson.public)
             settings.PUBLIC_SETTINGS = settingsJson.public;
 
         scripts = scripts.replace('__meteor_runtime_config__', '<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(settings))+'"));</script>');
         
         // add Meteor.disconnect() when no server is given
-        // if(!program.ddp)
+        if(!program.url)
             scripts += '        <script type="text/javascript">Meteor.disconnect();</script>';
 
         content = content.replace(/{{ *> *scripts *}}/, scripts);
