@@ -109,6 +109,28 @@ if(Meteor.isClient) {
     Meteor.connection.subscribe('users');
 
     // And then you subscribe like this:
-    DDPConnection.subscribe("mySubscription”);   
+    DDPConnection.subscribe("mySubscription");   
 }
+```
+
+## Making routing work on a non Meteor server
+
+To be able to open URLs and let them be handled by the client side JavaScript, you need to rewrite URLs on the server side, so they point always to your index.html.
+
+For apache a `.htaccess` with `mod_rewrite` could looks as follow:
+```bash
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Always pass through requests for files that exist
+    # Per http://stackoverflow.com/a/7090026/223225
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule . - [L]
+
+    # Send all other requests to index.html where the JavaScript router can take over
+    # and render the requested route
+    RewriteRule ^.*$ index.html [L]
+</IfModule>
 ```
