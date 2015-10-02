@@ -117,7 +117,7 @@ if(Meteor.isClient) {
 
 To be able to open URLs and let them be handled by the client side JavaScript, you need to rewrite URLs on the server side, so they point always to your index.html.
 
-For apache a `.htaccess` with `mod_rewrite` could looks as follow:
+For apache a `.htaccess` with `mod_rewrite` could look as follow:
 ```bash
 <IfModule mod_rewrite.c>
     RewriteEngine On
