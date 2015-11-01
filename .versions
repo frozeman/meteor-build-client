@@ -1,4 +1,4 @@
-frozeman:build-client@0.2.0
+frozeman:build-client@0.2.1
 meteor@1.1.10
 minifiers@1.1.7
 standard-minifiers@1.0.2
