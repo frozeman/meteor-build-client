@@ -118,15 +118,19 @@ module.exports = {
         if(_.isString(program.path)) {
 
             // fix paths in the CSS file
-            var cssFile = fs.readFileSync(path.join(buildPath, files['css']), {encoding: 'utf8'});
-            cssFile = cssFile.replace(/url\(\'\//g, 'url(\''+ program.path).replace(/url\(\//g, 'url('+ program.path);
-            fs.unlinkSync(path.join(buildPath, files['css']));
-            fs.writeFileSync(path.join(buildPath, files['css']), cssFile, {encoding: 'utf8'});
+            if(!_.isEmpty(files['css'])) {
 
-            files['css'] = program.path + files['css'];
+                var cssFile = fs.readFileSync(path.join(buildPath, files['css']), {encoding: 'utf8'});
+                cssFile = cssFile.replace(/url\(\'\//g, 'url(\''+ program.path).replace(/url\(\//g, 'url('+ program.path);
+                fs.unlinkSync(path.join(buildPath, files['css']));
+                fs.writeFileSync(path.join(buildPath, files['css']), cssFile, {encoding: 'utf8'});
+
+                files['css'] = program.path + files['css'];
+            }
             files['js'] = program.path + files['js'];
         } else {
-            files['css'] = '/'+ files['css'];
+            if(!_.isEmpty(files['css']))
+                files['css'] = '/'+ files['css'];
             files['js'] = '/'+ files['js'];
         }
 
