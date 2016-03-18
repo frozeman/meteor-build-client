@@ -38,7 +38,9 @@ You can pass an additional settings file using the `--settings` or `-s` option:
 
     $ meteor-build-client ../myOutputFolder -s ../settings.json
 
-**Note** Only the `public` property of that JSON file will be add to the `Meteor.settings` property.
+**Note**  The only properties in this file that will be processed are:
+- The `public` property of that JSON file will be added to the `Meteor.settings` property.
+- The `meteor_runtime_config` property of that JSON file will be added to the generated `__METEOR_RUNTIME_CONFIG__` options.
 
 
 ### App URL

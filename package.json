@@ -1,6 +1,6 @@
 {
   "name": "meteor-build-client",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A bundles the client part of a Meteor app.",
   "author": "Fabian Vogelsteller <fabian@frozeman.de>",
   "contributors": [

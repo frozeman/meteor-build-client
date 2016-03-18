@@ -144,6 +144,7 @@ module.exports = {
         '        <script type="text/javascript" src="'+ files['js'] +'"></script>'+ "\n";
 
         // add the meteor runtime config
+
         settings = {
             'meteorRelease': starJson.meteorRelease,
             'ROOT_URL_PATH_PREFIX': '',
@@ -161,8 +162,11 @@ module.exports = {
         if(settingsJson.public)
             settings.PUBLIC_SETTINGS = settingsJson.public;
 
+        if(settingsJson.meteor_runtime_config)
+            settings = _.extend(settings, settingsJson.meteor_runtime_config);
+
         scripts = scripts.replace('__meteor_runtime_config__', '<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(settings))+'"));</script>');
-        
+
         // add Meteor.disconnect() when no server is given
         if(!program.url)
             scripts += '        <script type="text/javascript">Meteor.disconnect();</script>';
