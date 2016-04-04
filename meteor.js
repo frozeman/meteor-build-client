@@ -161,6 +161,11 @@ module.exports = {
         if(settingsJson.public)
             settings.PUBLIC_SETTINGS = settingsJson.public;
 
+        settings.meteorEnv = {
+            NODE_ENV: 'production',
+            TEST_METADATA: '{}',
+        };
+        
         scripts = scripts.replace('__meteor_runtime_config__', '<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(settings))+'"));</script>');
         
         // add Meteor.disconnect() when no server is given
