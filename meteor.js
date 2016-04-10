@@ -147,6 +147,7 @@ module.exports = {
         settings = {
             'meteorRelease': starJson.meteorRelease,
             'ROOT_URL_PATH_PREFIX': '',
+            meteorEnv: { NODE_ENV: 'production' },
             // 'DDP_DEFAULT_CONNECTION_URL': program.url || '', // will reload infinite if Meteor.disconnect is not called
             // 'appId': process.env.APP_ID || null,
             // 'autoupdateVersion': null, // "ecf7fcc2e3d4696ea099fdd287dfa56068a692ec"
@@ -161,11 +162,6 @@ module.exports = {
         if(settingsJson.public)
             settings.PUBLIC_SETTINGS = settingsJson.public;
 
-        settings.meteorEnv = {
-            NODE_ENV: 'production',
-            TEST_METADATA: '{}',
-        };
-        
         scripts = scripts.replace('__meteor_runtime_config__', '<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(settings))+'"));</script>');
         
         // add Meteor.disconnect() when no server is given
