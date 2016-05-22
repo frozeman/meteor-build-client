@@ -26,9 +26,9 @@
     "browser-only"
   ],
   "bin": {
-    "meteor-build-client": "main.js"
+    "meteor-build-client": "cli.js"
   },
-  "main": "main.js",
+  "main": "index.js",
   "dependencies": {
     "commander": "^2.8.1",
     "simple-spinner": "0.0.3",
