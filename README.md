@@ -19,6 +19,9 @@ so it can be hosted on any server or even loaded via the `file://` protocol.
     // run meteor-build-client
     $ meteor-build-client ../myOutputFolder
 
+**Warning** the content of the output folder will be deleted before building the new output! So dont do things like
+`$ meteor-build-client /home`!
+
 ### Output
 
 The content of the output folder could look as follows:

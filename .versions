@@ -1,8 +1,8 @@
-frozeman:build-client@0.3.0
-meteor@1.1.13
-minifier-css@1.1.10
-minifier-js@1.1.10
-standard-minifier-css@1.0.5
-standard-minifier-js@1.0.5
-standard-minifiers@1.0.5
-underscore@1.0.7
+frozeman:build-client@0.3.1
+meteor@1.1.14
+minifier-css@1.1.11
+minifier-js@1.1.11
+standard-minifier-css@1.0.6
+standard-minifier-js@1.0.6
+standard-minifiers@1.0.6
+underscore@1.0.8
