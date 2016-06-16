@@ -4,7 +4,7 @@ module.exports = function() {
   var invokations = [];
   var paused = true;
   var maxLength = 0;
-  
+
   self.progress = function(count, total) {
     // console.log(count + ' of ' + total);
   };
@@ -28,9 +28,8 @@ module.exports = function() {
       self.reset();
       console.log(' ' + text.red);
     }
-    
-    if (!paused) {
 
+    if (!paused) {
 
       if (invokations.length) {
         var f = invokations.shift();

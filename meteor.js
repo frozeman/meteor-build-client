@@ -10,6 +10,19 @@ var argPath = process.argv[2],
     buildPath = path.resolve(argPath),
     bundleName = path.basename(path.resolve(basePath));
 
+// HELPERS
+var helpers = {
+    endsWith: function(str, arr) {
+        for (var i = arr.length - 1; i >= 0; i--) {
+            if (str.indexOf(arr[i], str.length - arr[i].length) !== -1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+};
+
 // execute shell scripts
 var execute = function(command, name, complete) {
     var exec = require('child_process').exec;
@@ -49,21 +62,41 @@ var deleteFolderRecursive = function(path) {
     }
 };
 
+var deleteBuildFiles = function(buildPath) {
+    var files = [];
+    if (fs.existsSync(buildPath)) {
+        files = fs.readdirSync(buildPath);
+        files.forEach(function (file, index) {
+            var curPath = buildPath + "/" + file;
+            if (helpers.endsWith(file, ['.css', '.html', '.map', '.js'])) {
+                fs.unlinkSync(curPath);
+            }
+        });
+    }
+}
+
 
 module.exports = {
-    build: function(program, callback){
-        // remove the bundle folder
-        deleteFolderRecursive(buildPath);
+    build: function(program, remove, callback){
+        if (typeof remove === 'undefined') remove = true;
+
+        if (remove) {
+            // remove the bundle folder
+            deleteFolderRecursive(buildPath);
+        } else {
+            // remove previous build files only
+            deleteBuildFiles(buildPath);
+        }
 
         var command = 'meteor build '+ argPath + ' --directory';
 
         if(program.url)
              command += ' --server '+ program.url;
 
-         // if(program.settings)
-         //     command += ' --mobile-settings '+ program.settings;
+        // if(program.settings)
+        //     command += ' --mobile-settings '+ program.settings;
 
-         // console.log('Running: '+ command);
+        // console.log('Running: '+ command);
 
         execute(command, 'build the app, are you in your meteor apps folder?', callback);
     },
@@ -163,7 +196,7 @@ module.exports = {
             settings.PUBLIC_SETTINGS = settingsJson.public;
 
         scripts = scripts.replace('__meteor_runtime_config__', '<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(settings))+'"));</script>');
-        
+
         // add Meteor.disconnect() when no server is given
         if(!program.url)
             scripts += '        <script type="text/javascript">Meteor.disconnect();</script>';

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
+var path = require('path');
 
 // CLI Options
 var program = require('commander');
@@ -53,10 +54,10 @@ if(!argPath) {
         try {
             if(!fs.lstatSync('./.meteor').isDirectory())
                 throw new Error();
-            
+
         } catch(e) {
             console.error('You\'re not in a Meteor app folder or inside a sub folder of your app.');
-            return;  
+            return;
         }
 
         // check template file
@@ -64,17 +65,21 @@ if(!argPath) {
             try {
                 if(!fs.lstatSync(program.template).isFile())
                     throw new Error();
-                
+
             } catch(e) {
                 console.error('The template file "'+ program.template +'" doesn\'t exist or is not a valid template file');
-                return;  
+                return;
             }
         }
 
         // build meteor
         queue.add(function(callback){
             console.log('Bundling Meteor app...');
-            meteor.build(program, callback);
+            var origin = fs.realpathSync(path.resolve('./'));
+            var dest = fs.realpathSync(path.resolve(argPath));
+            var remove = origin.indexOf(dest) == -1;
+
+            meteor.build(program, remove, callback);
         });
 
         // move the files into the build folder
@@ -93,7 +98,7 @@ if(!argPath) {
             meteor.cleanUp(function(){
                 console.log('Done!');
                 console.log('-----');
-                console.log('You can find your files in "'+ require('path').resolve(argPath) +'".');
+                console.log('You can find your files in "'+ path.resolve(argPath) +'".');
 
                 callback();
             });
