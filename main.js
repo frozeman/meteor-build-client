@@ -4,10 +4,8 @@ var fs = require('fs');
 
 // CLI Options
 var program = require('commander');
-// Queue
-var Queue = require('./queue');
-// Build queue syncron
-var queue = new Queue();
+
+var Q = require('bluebird');
 
 var packageJson = require('./package.json');
 
@@ -35,75 +33,41 @@ program.on('--help', function(){
 program.parse(process.argv);
 
 
-// RUN TASKS
-
-// TODO: get meteor apps basepath and set it as cwd
-// console.log(process.cwd());
-// process.chdir('new cwd');
-
-if(!argPath) {
-    console.error('You need to provide a path for the build output, for example:');
-    console.error('$ meteor-build-client myBuildFolder');
-
-} else {
-
-    (function(){
-
-        // check if in meteor folder
-        try {
-            if(!fs.lstatSync('./.meteor').isDirectory())
-                throw new Error();
-            
-        } catch(e) {
-            console.error('You\'re not in a Meteor app folder or inside a sub folder of your app.');
-            return;  
-        }
-
-        // check template file
-        if(program.template) {
-            try {
-                if(!fs.lstatSync(program.template).isFile())
-                    throw new Error();
-                
-            } catch(e) {
-                console.error('The template file "'+ program.template +'" doesn\'t exist or is not a valid template file');
-                return;  
-            }
-        }
-
-        // build meteor
-        queue.add(function(callback){
-            console.log('Bundling Meteor app...');
-            meteor.build(program, callback);
-        });
-
-        // move the files into the build folder
-        queue.add(function(callback){
-            console.log('Generating the index.html...');
-            meteor.move(callback);
-        });
-
-        // create the index.html
-        queue.add(function(callback){
-            meteor.addIndexFile(program, callback);
-        });
-
-        // delete unecessary fiels
-        queue.add(function(callback){
-            meteor.cleanUp(function(){
-                console.log('Done!');
-                console.log('-----');
-                console.log('You can find your files in "'+ require('path').resolve(argPath) +'".');
-
-                callback();
-            });
-        });
-
-        queue.run();
-    })()
-}
-
-
-
-
-
+Q.try(function() {
+    if (!argPath) {
+        throw new Error("You need to provide a path for the build output, for example:\n\n$ meteor-build-client myBuildFolder");
+    }  
+      
+    if (!fs.lstatSync('./.meteor').isDirectory())
+        throw new Error('You\'re not in a Meteor app folder or inside a sub folder of your app.');
+    }
+    
+    if(program.template && !fs.lstatSync(program.template).isFile()) {
+        throw new Error('The template file "'+ program.template +'" doesn\'t exist or is not a valid template file');
+    }
+})
+.then(function() {
+    console.log('Bundling Meteor app...');
+    
+    return meteor.build(program);
+})
+.then(function() {
+    console.log('Generating the index.html...');
+    
+    return meteor.move();
+})
+.then(function() {
+    return meteor.addIndexFile(program);
+})
+.then(function() {
+    return meteor.cleanUp();
+.then(function() {
+    console.log('Done!');
+    console.log('-----');
+    console.log('You can find your files in "'+ require('path').resolve(argPath) +'".');    
+})
+.catch(function(err) {
+    console.error(err);
+  
+    process.exit(-1);
+});

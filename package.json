@@ -30,6 +30,8 @@
   },
   "main": "main.js",
   "dependencies": {
+    "bluebird": "^3.4.6",
+    "buffered-spawn": "^3.3.2",
     "commander": "^2.8.1",
     "simple-spinner": "0.0.3",
     "underscore": "^1.8.3"
