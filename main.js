@@ -38,7 +38,7 @@ Q.try(function() {
         throw new Error("You need to provide a path for the build output, for example:\n\n$ meteor-build-client myBuildFolder");
     }  
       
-    if (!fs.lstatSync('./.meteor').isDirectory())
+    if (!fs.lstatSync('./.meteor').isDirectory()) {
         throw new Error('You\'re not in a Meteor app folder or inside a sub folder of your app.');
     }
     
@@ -61,13 +61,18 @@ Q.try(function() {
 })
 .then(function() {
     return meteor.cleanUp();
+})
 .then(function() {
     console.log('Done!');
     console.log('-----');
     console.log('You can find your files in "'+ require('path').resolve(argPath) +'".');    
 })
 .catch(function(err) {
-    console.error(err);
+    if (err.stderr || err.stdout) {
+        console.error(err.stdout, err.stderr);
+    } else {
+        console.error(err);
+    }
   
     process.exit(-1);
 });

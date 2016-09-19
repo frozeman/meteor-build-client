@@ -21,7 +21,7 @@ var execute = function(command, name) {
         
         spawn(command[0], command.slice(1), {
             cwd: basePath
-        },function(err) {
+        },function(err, stdout, stderr) {
             spinner.stop();
 
             if (err){
