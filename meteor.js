@@ -110,12 +110,12 @@ module.exports = {
             content = content.replace(/{{ *> *head *}}/,head);
 
             // get the css and js files
-            var files = {};
+            var files = {css:[],js:[]};
             _.each(fs.readdirSync(buildPath), function(file){
                 if(/^[a-z0-9]{40}\.css$/.test(file))
-                    files['css'] = file;
+                    files['css'].push(file);
                 if(/^[a-z0-9]{40}\.js$/.test(file))
-                    files['js'] = file;
+                    files['js'].push(file);
             });
 
             // MAKE PATHS ABSOLUTE
@@ -123,29 +123,49 @@ module.exports = {
 
                 // fix paths in the CSS file
                 if(!_.isEmpty(files['css'])) {
+                    _.each(files['css'], function(css, i) {
+                        var cssFile = fs.readFileSync(path.join(buildPath, css), {encoding: 'utf8'});
+                        cssFile = cssFile.replace(/url\(\'\//g, 'url(\''+ program.path).replace(/url\(\//g, 'url('+ program.path);
+                        fs.unlinkSync(path.join(buildPath, css));
+                        fs.writeFileSync(path.join(buildPath, css), cssFile, {encoding: 'utf8'});
 
-                    var cssFile = fs.readFileSync(path.join(buildPath, files['css']), {encoding: 'utf8'});
-                    cssFile = cssFile.replace(/url\(\'\//g, 'url(\''+ program.path).replace(/url\(\//g, 'url('+ program.path);
-                    fs.unlinkSync(path.join(buildPath, files['css']));
-                    fs.writeFileSync(path.join(buildPath, files['css']), cssFile, {encoding: 'utf8'});
-
-                    files['css'] = program.path + files['css'];
+                        files['css'][i] = program.path + css;
+                    })
                 }
-                files['js'] = program.path + files['js'];
+                if(!_.isEmpty(files['js'])) {
+                    _.each(files['js'], function(jsFile, i) {
+                        files['js'][i] = program.path + jsFile;
+                    })
+                }
             } else {
-                if(!_.isEmpty(files['css']))
-                    files['css'] = '/'+ files['css'];
-                files['js'] = '/'+ files['js'];
+                if(!_.isEmpty(files['css'])) {
+                    _.each(files['css'], function(cssFile, i) {
+                        files['css'][i] = '/'+ cssFile;
+                    })
+                }
+                if(!_.isEmpty(files['js'])) {
+                    _.each(files['js'], function(jsFile, i) {
+                        files['js'][i] = '/'+ jsFile;
+                    })
+                }
             }
 
 
             // ADD CSS
-            var css = '<link rel="stylesheet" type="text/css" class="__meteor-css__" href="'+ files['css'] +'?meteor_css_resource=true">';
+            var css = [];
+            _.each(files['css'], function(cssFile) {
+                css.push('<link rel="stylesheet" type="text/css" class="__meteor-css__" href="'+ cssFile +'?meteor_css_resource=true">');
+            })
+            css = css.join("\n        ");
             content = content.replace(/{{ *> *css *}}/, css);
 
             // ADD the SCRIPT files
-            var scripts = '__meteor_runtime_config__'+ "\n"+
-            '        <script type="text/javascript" src="'+ files['js'] +'"></script>'+ "\n";
+            var scripts = [];
+            _.each(files['js'], function(jsFile) {
+                scripts.push('__meteor_runtime_config__' + "\n" +
+                    '        <script type="text/javascript" src="'+ jsFile +'"></script>'+ "\n");
+            })
+            scripts = scripts.join("\n        ");
 
             // add the meteor runtime config
             settings = {
