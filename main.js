@@ -36,8 +36,8 @@ program.parse(process.argv);
 Q.try(function() {
     if (!argPath) {
         throw new Error("You need to provide a path for the build output, for example:\n\n$ meteor-build-client myBuildFolder");
-    }  
-      
+    }
+
     if (!fs.lstatSync('./.meteor').isDirectory()) {
         throw new Error('You\'re not in a Meteor app folder or inside a sub folder of your app.');
     }
@@ -48,12 +48,15 @@ Q.try(function() {
 })
 .then(function() {
     console.log('Bundling Meteor app...');
-    
+
     return meteor.build(program);
 })
 .then(function() {
+    return meteor.bundle();
+})
+.then(function() {
     console.log('Generating the index.html...');
-    
+
     return meteor.move();
 })
 .then(function() {
@@ -65,7 +68,7 @@ Q.try(function() {
 .then(function() {
     console.log('Done!');
     console.log('-----');
-    console.log('You can find your files in "'+ require('path').resolve(argPath) +'".');    
+    console.log('You can find your files in "'+ require('path').resolve(argPath) +'".');
 })
 .catch(function(err) {
     if (err.stderr || err.stdout) {
@@ -73,6 +76,6 @@ Q.try(function() {
     } else {
         console.error(err);
     }
-  
+
     process.exit(-1);
 });

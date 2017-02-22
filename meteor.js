@@ -1,6 +1,7 @@
 // MODULES
 var fs = require('fs');
 var path = require('path');
+var crypto = require('crypto');
 var _ = require('underscore');
 var Q = require('bluebird');
 var spinner = require('simple-spinner');
@@ -18,7 +19,7 @@ var argPath = process.argv[2],
 var execute = function(command, name) {
     return new Q(function(resolve, reject) {
         spinner.start();
-        
+
         spawn(command[0], command.slice(1), {
             cwd: basePath
         },function(err, stdout, stderr) {
@@ -26,7 +27,7 @@ var execute = function(command, name) {
 
             if (err){
                 console.log(err.message);
-                
+
                 reject(err);
             } else {
                 resolve({
@@ -34,7 +35,7 @@ var execute = function(command, name) {
                     stderr: stderr,
                 });
             }
-        });        
+        });
     });
 };
 
@@ -68,8 +69,35 @@ module.exports = {
                 command.push(program.url);
             }
 
-            return execute(command, 'build the app, are you in your meteor apps folder?');                        
+            return execute(command, 'build the app, are you in your meteor apps folder?');
         });
+    },
+    bundle: function(program) {
+      return Q.try(function(resolve, reject) {
+        var browserPath = path.resolve(buildPath) + '/bundle/programs/web.browser/'
+        var programJson = require(browserPath + 'program.json');
+        var manifest = programJson.manifest;
+
+        var files = manifest.filter(function(file) { return file.where === 'client' });
+        var jsBundle = '';
+        var cssBundle = '';
+        files.forEach(function(file) {
+          var realPath = path.resolve(browserPath, file.path)
+          var content = fs.readFileSync(realPath, {encoding: 'utf-8'});
+          if (file.type === 'js')
+            jsBundle += content;
+          else if (file.type === 'css')
+            cssBundle += content;
+
+          fs.unlinkSync(realPath);
+        });
+
+        var jsHash = crypto.createHash('sha1').update(jsBundle).digest('hex');
+        fs.writeFileSync(path.resolve(browserPath, jsHash + '.js'), jsBundle, {encoding: 'utf-8'});
+
+        var cssHash = crypto.createHash('sha1').update(cssBundle).digest('hex');
+        fs.writeFileSync(path.resolve(browserPath, cssHash + '.css'), cssBundle, {encoding: 'utf-8'});
+      })
     },
     move: function(){
         return Q.try(function() {
@@ -90,7 +118,7 @@ module.exports = {
                 });
             } catch(e) {
                 // do nothing
-            }            
+            }
         });
     },
     addIndexFile: function(program) {
@@ -120,7 +148,6 @@ module.exports = {
 
             // MAKE PATHS ABSOLUTE
             if(_.isString(program.path)) {
-
                 // fix paths in the CSS file
                 if(!_.isEmpty(files['css'])) {
 
@@ -167,7 +194,7 @@ module.exports = {
                 settings.PUBLIC_SETTINGS = settingsJson.public;
 
             scripts = scripts.replace('__meteor_runtime_config__', '<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(settings))+'"));</script>');
-            
+
             // add Meteor.disconnect() when no server is given
             if(!program.url)
                 scripts += '        <script type="text/javascript">Meteor.disconnect();</script>';
@@ -187,7 +214,7 @@ module.exports = {
                 fs.unlinkSync(path.join(buildPath, 'head.html'));
             } catch (e){
                 console.log("Didn't unlink head.html; doesn't exist.");
-            }            
+            }
         });
     }
 }
