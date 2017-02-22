@@ -1,21 +1,34 @@
 {
-  "analyze": true,
-  "author": {
-    "name": "Fabian Vogelsteller",
-    "email": "fabian@frozeman.de"
-  },
-  "bin": {
-    "meteor-build-client": "main.js"
-  },
-  "bugs": {
-    "url": "https://github.com/frozeman/meteor-build-client/issues"
-  },
+  "name": "meteor-build-client",
+  "version": "0.4.1",
+  "description": "A bundles the client part of a Meteor app.",
+  "author": "Fabian Vogelsteller <fabian@frozeman.de>",
   "contributors": [
     {
       "name": "Morten N.O. Nørgaard Henriksen",
       "email": "mh@gi2.dk"
     }
   ],
+  "preferGlobal": true,
+  "analyze": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frozeman/meteor-build-client"
+  },
+  "bugs": {
+    "url": "https://github.com/frozeman/meteor-build-client/issues"
+  },
+  "keywords": [
+    "meteor",
+    "client",
+    "client-only",
+    "browser-only"
+  ],
+  "bin": {
+    "meteor-build-client": "main.js"
+  },
+  "main": "main.js",
   "dependencies": {
     "bluebird": "^3.4.6",
     "buffered-spawn": "^3.3.2",
@@ -23,37 +36,5 @@
     "simple-spinner": "0.0.3",
     "underscore": "^1.8.3"
   },
-  "description": "A bundles the client part of a Meteor app.",
-  "devDependencies": {},
-  "directories": {},
-  "dist": {
-    "shasum": "f31126f5e7974830c69d44ce96dddcdc362b7793",
-    "tarball": "https://registry.npmjs.org/meteor-build-client/-/meteor-build-client-0.4.1.tgz"
-  },
-  "gitHead": "da57eb9f5e7d3e40c7a7e62becaa136a56447b06",
-  "homepage": "https://github.com/frozeman/meteor-build-client#readme",
-  "keywords": [
-    "meteor",
-    "client",
-    "client-only",
-    "browser-only"
-  ],
-  "license": "MIT",
-  "main": "main.js",
-  "maintainers": [
-    {
-      "name": "frozeman",
-      "email": "fabian@frozeman.de"
-    }
-  ],
-  "name": "meteor-build-client",
-  "optionalDependencies": {},
-  "preferGlobal": true,
-  "readme": "ERROR: No README data found!",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/frozeman/meteor-build-client.git"
-  },
-  "scripts": {},
-  "version": "0.4.1"
+  "devDependencies": {}
 }
