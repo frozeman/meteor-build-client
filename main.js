@@ -41,7 +41,7 @@ Q.try(function() {
     if (!fs.lstatSync('./.meteor').isDirectory()) {
         throw new Error('You\'re not in a Meteor app folder or inside a sub folder of your app.');
     }
-    
+
     if(program.template && !fs.lstatSync(program.template).isFile()) {
         throw new Error('The template file "'+ program.template +'" doesn\'t exist or is not a valid template file');
     }

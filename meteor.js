@@ -89,7 +89,8 @@ module.exports = {
           else if (file.type === 'css')
             cssBundle += content;
 
-          fs.unlinkSync(realPath);
+          if (file.type === 'js' || file.type === 'css')
+            fs.unlinkSync(realPath);
         });
 
         var jsHash = crypto.createHash('sha1').update(jsBundle).digest('hex');
@@ -111,8 +112,6 @@ module.exports = {
                     rootFolder = _.without(rootFolder, 'app');
 
                     rootFolder.forEach( function (file) {
-                        var curSource = path.join(clientPath, file);
-
                         fs.renameSync(path.join(clientPath, file), path.join(buildPath, file));
                     });
                 });
