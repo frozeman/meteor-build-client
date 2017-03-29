@@ -6,6 +6,8 @@ var _ = require('underscore');
 var Q = require('bluebird');
 var spinner = require('simple-spinner');
 var spawn = require('buffered-spawn');
+var UglifyJS = require('uglify-js');
+
 
 Q.promisifyAll(fs);
 
@@ -94,10 +96,13 @@ module.exports = {
         });
 
         var jsHash = crypto.createHash('sha1').update(jsBundle).digest('hex');
-        fs.writeFileSync(path.resolve(browserPath, jsHash + '.js'), jsBundle, {encoding: 'utf-8'});
+        var jsPath = path.resolve(browserPath, jsHash) + '.min.js';
+
+        var jsMinified = UglifyJS.minify(jsBundle, {fromString: true})
+        fs.writeFileSync(jsPath, jsMinified.code, {encoding: 'utf-8'});
 
         var cssHash = crypto.createHash('sha1').update(cssBundle).digest('hex');
-        fs.writeFileSync(path.resolve(browserPath, cssHash + '.css'), cssBundle, {encoding: 'utf-8'});
+        fs.writeFileSync(path.resolve(browserPath, cssHash + '.min.css'), cssBundle, {encoding: 'utf-8'});
       })
     },
     move: function(){
@@ -139,9 +144,9 @@ module.exports = {
             // get the css and js files
             var files = {};
             _.each(fs.readdirSync(buildPath), function(file){
-                if(/^[a-z0-9]{40}\.css$/.test(file))
+                if(/^[a-z0-9]{40}\.min.css$/.test(file))
                     files['css'] = file;
-                if(/^[a-z0-9]{40}\.js$/.test(file))
+                if(/^[a-z0-9]{40}\.min.js$/.test(file))
                     files['js'] = file;
             });
 

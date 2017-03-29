@@ -34,7 +34,8 @@
     "buffered-spawn": "^3.3.2",
     "commander": "^2.8.1",
     "simple-spinner": "0.0.3",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony"
   },
   "devDependencies": {}
 }
