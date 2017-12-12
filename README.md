@@ -65,6 +65,11 @@ The default path value is `"/"`.
 
 *Note* When set a path value, it will also replace this path in you Meteor CSS file, so that fonts etc link correctly.
 
+
+### Using your own build folder
+
+If you want to use your own build folder by running `meteor build` yourself, specify the `--usebuild` flag and meteor-build-client will not run the meteor build command for you. It will expect that the build folder be located up a directory from the app folder (A sibling to /app, Meteor's default location). 
+
 ### Using custom templates
 
 If you want to provide a custom template for the initial HTML provide an HTML file with the `--template` or `-t` option:
