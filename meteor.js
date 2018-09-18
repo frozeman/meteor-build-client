@@ -103,7 +103,7 @@ module.exports = {
             try{
                 head = fs.readFileSync(path.join(buildPath, 'head.html'), {encoding: 'utf8'});
             } catch(e) {
-                head = '';
+                head = '<meta charset="utf-8" /> '; // provide default encoding
                 console.log('No <head> found in Meteor app...');
             }
             // ADD HEAD
