@@ -18,7 +18,7 @@ var argPath = process.argv[2],
 var execute = function(command, name) {
     return new Q(function(resolve, reject) {
         spinner.start();
-        
+
         spawn(command[0], command.slice(1), {
             cwd: basePath
         },function(err, stdout, stderr) {
@@ -26,7 +26,7 @@ var execute = function(command, name) {
 
             if (err){
                 console.log(err.message);
-                
+
                 reject(err);
             } else {
                 resolve({
@@ -34,7 +34,7 @@ var execute = function(command, name) {
                     stderr: stderr,
                 });
             }
-        });        
+        });
     });
 };
 
@@ -68,15 +68,19 @@ module.exports = {
                 command.push(program.url);
             }
 
-            return execute(command, 'build the app, are you in your meteor apps folder?');                        
+            return execute(command, 'build the app, are you in your meteor apps folder?');
         });
     },
-    move: function(){
+    move: function(program){
         return Q.try(function() {
             try {
+                var basePath = '/bundle/programs/web.browser/';
+                var legacyPath = '/bundle/programs/web.browser.legacy/';
+                var baseDir = program.legacy ? legacyPath : basePath;
                 _.each([
-                    '/bundle/programs/web.browser',
-                    '/bundle/programs/web.browser/app'
+                    baseDir,
+                    baseDir+'app/',
+
                 ], function(givenPath){
                     var clientPath = path.join(buildPath, givenPath);
                     var rootFolder = fs.readdirSync(clientPath);
@@ -150,6 +154,9 @@ module.exports = {
                 }
             }
 
+            var legacy = program.legacy ? "<meta http-equiv='X-UA-Compatible' content='IE=edge'>" : "";
+            content.replace(/{{ *> *legacy *}}/, legacy);
+
 
             // ADD CSS
             var css = [];
@@ -187,7 +194,7 @@ module.exports = {
                 settings.PUBLIC_SETTINGS = settingsJson.public;
 
             scripts = scripts.replace('__meteor_runtime_config__', '<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("'+encodeURIComponent(JSON.stringify(settings))+'"));</script>');
-            
+
             // add Meteor.disconnect() when no server is given
             if(!program.url)
                 scripts += '        <script type="text/javascript">Meteor.disconnect();</script>';
@@ -207,7 +214,7 @@ module.exports = {
                 fs.unlinkSync(path.join(buildPath, 'head.html'));
             } catch (e){
                 console.log("Didn't unlink head.html; doesn't exist.");
-            }            
+            }
         });
     }
 }
