@@ -152,7 +152,7 @@ module.exports = {
                 'meteorRelease': starJson.meteorRelease,
                 'ROOT_URL_PATH_PREFIX': '',
                 meteorEnv: { NODE_ENV: 'production' },
-                autoupdate: { version : {}},
+                autoupdate: { versions : {}},
                 // 'DDP_DEFAULT_CONNECTION_URL': program.url || '', // will reload infinite if Meteor.disconnect is not called
                 // 'appId': process.env.APP_ID || null,
                 // 'autoupdateVersion': null, // "ecf7fcc2e3d4696ea099fdd287dfa56068a692ec"
