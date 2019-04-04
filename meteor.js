@@ -17,12 +17,12 @@ var argPath = process.argv[2],
 // execute shell scripts
 var execute = function(command, name) {
     return new Q(function(resolve, reject) {
-        spinner.start();
+        //spinner.start();
         
-        spawn(command[0], command.slice(1), {
+        let cmd = spawn(command[0], command.slice(1), {
             cwd: basePath
         },function(err, stdout, stderr) {
-            spinner.stop();
+            //spinner.stop();
 
             if (err){
                 console.log(err.message);
@@ -35,6 +35,8 @@ var execute = function(command, name) {
                 });
             }
         });        
+        cmd.stdout.pipe(process.stdout);
+        cmd.stderr.pipe(process.stderr);
     });
 };
 
@@ -62,10 +64,19 @@ module.exports = {
             deleteFolderRecursive(buildPath);
 
             var command = ['meteor', 'build', argPath, '--directory'];
+            if (program.debug) {
+                command.push('--debug');
+            }
+            if (program.verbose) {
+                command.push('--verbose');
+            }
 
             if (program.url) {
                 command.push('--server');
                 command.push(program.url);
+            }
+            if (program.debug) {
+                console.log(command.join(' '));
             }
 
             return execute(command, 'build the app, are you in your meteor apps folder?');                        
