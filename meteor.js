@@ -129,6 +129,22 @@ module.exports = {
                     files['js'].push(file);
             });
 
+            // --debug case
+            if (program.debug) {
+                var json = fs.readFileSync(path.resolve(path.join(buildPath, 'program.json')), {encoding: 'utf-8'});
+                var prog = JSON.parse(json);
+
+                _.each(prog.manifest, function(item) {
+                    if (item.type == 'js' && item.url) {
+                        files['js'].push(item.path.replace(/^app\//, '') + '?hash=' + item.hash);
+                    }
+                    if (item.type == 'css' && item.url) {
+                        // for css file cases, do not append hash.
+                        files['css'].push(item.path.replace(/^app\//, ''));
+                    }
+                });
+            }
+
             // MAKE PATHS ABSOLUTE
             if(_.isString(program.path)) {
 
@@ -171,10 +187,9 @@ module.exports = {
             content = content.replace(/{{ *> *css *}}/, css);
 
             // ADD the SCRIPT files
-            var scripts = [];
+            var scripts = ['__meteor_runtime_config__'];
             _.each(files['js'], function(jsFile) {
-                scripts.push('__meteor_runtime_config__' + "\n" +
-                    '        <script type="text/javascript" src="'+ jsFile +'"></script>'+ "\n");
+                scripts.push('<script type="text/javascript" src="'+ jsFile +'"></script>');
             })
             scripts = scripts.join("\n        ");
 
@@ -201,7 +216,7 @@ module.exports = {
             
             // add Meteor.disconnect() when no server is given
             if(!program.url)
-                scripts += '        <script type="text/javascript">Meteor.disconnect();</script>';
+                scripts += "\n"+'        <script type="text/javascript">Meteor.disconnect();</script>';
 
             content = content.replace(/{{ *> *scripts *}}/, scripts);
 
