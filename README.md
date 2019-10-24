@@ -142,3 +142,20 @@ For apache a `.htaccess` with `mod_rewrite` could look as follow:
     RewriteRule ^.*$ index.html [L]
 </IfModule>
 ```
+
+For nginx:
+```conf
+server {
+  listen 80;
+  listen [::]:80;
+  index index.html;
+  server_name myapp.com;
+  root /var/www/myapp;
+
+  error_page 404 =200 /index.html;
+  
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+}
+```
