@@ -79,6 +79,10 @@ module.exports = {
                 console.log(command.join(' '));
             }
 
+            if (program.hideSpinner && program.hideSpinner) {
+                spinner.change_sequence([' '])
+            }
+
             return execute(command, 'build the app, are you in your meteor apps folder?');                        
         });
     },

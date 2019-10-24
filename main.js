@@ -23,6 +23,7 @@ program
     .option('-D, --debug', 'Build in debug mode (don\'t minify, etc)')
     .option('-v, --verbose', 'Add optional verbose option.');
     // .option('-d, --ddp <url>', 'The URL of your Meteor DDP server, e.g. "ddp+sockjs://ddp.myapp.com/sockjs". If you don\'t add any it will also add call "Meteor.disconnect();" to prevent the app from conneting.');
+    .option('-hide, --hideSpinner', 'Hide spinner on command while executing within the option. Default is: true');
 
 program.on('--help', function(){
     console.log('  Warning:');
