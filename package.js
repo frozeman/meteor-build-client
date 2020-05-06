@@ -1,7 +1,7 @@
 Package.describe({
     name: "frozeman:build-client",
     summary: "Placeholder package for meteor-build-client (npm). Do not install!",
-    version: "0.4.2",
+    version: "0.4.3",
     git: "https://github.com/frozeman/meteor-build-client"
 });
 

@@ -40,35 +40,34 @@ program.parse(process.argv);
 Q.try(function() {
     if (!argPath) {
         throw new Error("You need to provide a path for the build output, for example:\n\n$ meteor-build-client myBuildFolder");
-    }  
-      
+    }
+
     if (!fs.lstatSync('./.meteor').isDirectory()) {
         throw new Error('You\'re not in a Meteor app folder or inside a sub folder of your app.');
     }
-    
+
     if(program.template && !fs.lstatSync(program.template).isFile()) {
         throw new Error('The template file "'+ program.template +'" doesn\'t exist or is not a valid template file');
     }
 })
 .then(function() {
-  /** 
-   * Allow the user to decide whether or not they want to use the 
+  /**
+   * Allow the user to decide whether or not they want to use the
    * meteor-build-client build or their own
   */
 
-  console.log(program.usebuild,program);
   if(program.usebuild && fs.lstatSync('../build').isDirectory()){
     console.log('Using ../build');
     console.log('Generating the index.html...');
-    
+
     return meteor.move();
   }else{
-    console.log('Bundling Meteor app...'); 
-    
+    console.log('Bundling Meteor app...');
+
     return meteor.build(program)
       .then(function(){
         console.log('Generating the index.html...');
-        
+
         return meteor.move();
       });
   }
@@ -82,7 +81,7 @@ Q.try(function() {
 .then(function() {
     console.log('Done!');
     console.log('-----');
-    console.log('You can find your files in "'+ require('path').resolve(argPath) +'".');    
+    console.log('You can find your files in "'+ require('path').resolve(argPath) +'".');
 })
 .catch(function(err) {
     if (err.stderr || err.stdout) {
@@ -90,6 +89,6 @@ Q.try(function() {
     } else {
         console.error(err);
     }
-  
+
     process.exit(-1);
 });
