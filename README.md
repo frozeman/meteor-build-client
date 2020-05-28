@@ -92,7 +92,7 @@ If you're building server-less standalone web application we recommend to replac
 
 ### Template
 
-Following Meteor's recommended usage of `<meteor-bundled-css />` and `<meteor-bundled-js/>` this tags will be replaced with links to generated CSS and JS files respectively. Optionally, use `{{url-to-meteor-bundled-css}}` as a placeholder for URL to generated CSS file. We encourage to use `blaze-html-templates` package for creating bare HTML template in your app, minimal example:
+Following Meteor's recommended usage of `<meteor-bundled-css />` and `<meteor-bundled-js/>` this tags will be replaced with links to generated CSS and JS files respectively. Optionally, use `{{url-to-meteor-bundled-css}}` as a placeholder for URL to generated CSS file. We encourage to use `static-html` (*for non-Blaze projects*) or `blaze-html-templates` (*for Blaze projects*) package for creating bare HTML template in your app, minimal example:
 
 ```html
 <!-- client/head.html -->
