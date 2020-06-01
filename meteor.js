@@ -24,6 +24,17 @@ const RE = {
     template: /{{ *> *css *}}/,
     tag: /<meteor-bundled-css *\/>/,
     url: /{{ *url-to-meteor-bundled-css *}}/
+  },
+  templates: {
+    head: /{{ *> *head *}}/,
+    body: /{{ *> *body *}}/
+  },
+  fileName: {
+    js: /^[a-z0-9]{40}\.js$/,
+    css: /^[a-z0-9]{40}\.css$/
+  },
+  path: {
+    app: /^app\//
   }
 };
 
@@ -134,8 +145,8 @@ module.exports = {
       }
 
       // ADD HEAD
-      content = content.replace(/{{ *> *head *}}/, head);
-      content = content.replace(/{{ *> *body *}}/, body);
+      content = content.replace(RE.templates.head, head);
+      content = content.replace(RE.templates.body, body);
 
       // get the css and js files
       const files = {
@@ -144,9 +155,9 @@ module.exports = {
       };
 
       _.each(fs.readdirSync(outputPath), (file) => {
-        if (/^[a-z0-9]{40}\.js$/.test(file)) {
+        if (RE.fileName.js.test(file)) {
           files.js.push(file);
-        } else if (/^[a-z0-9]{40}\.css$/.test(file)) {
+        } else if (RE.fileName.css.test(file)) {
           files.css.push(file);
         }
       });
@@ -160,13 +171,13 @@ module.exports = {
 
         _.each(prog.manifest, (item) => {
           if (item.type === 'js' && item.url) {
-            files.js.push(item.path.replace(/^app\//, '') + '?hash=' + item.hash);
+            files.js.push(item.path.replace(RE.path.app, '') + '?hash=' + item.hash);
           } else if (item.type === 'css' && item.url) {
             // for css file cases, do not append hash.
-            files.css.push(item.path.replace(/^app\//, ''));
+            files.css.push(item.path.replace(RE.path.app, ''));
 
             if (item.url.includes('meteor_css_resource=true')) {
-              primaryCSSfile = item.path.replace(/^app\//, '');
+              primaryCSSfile = item.path.replace(RE.path.app, '');
             }
           }
         });
