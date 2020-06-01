@@ -108,7 +108,7 @@ Following Meteor's recommended usage of `<meteor-bundled-css />` and `<meteor-bu
 
 Where `<meteor-bundled-css />` will be replaced with `<link />` element to generated CSS file(s) and `{{url-to-meteor-bundled-css}}` will be replaced with URL to generated CSS file.
 
-```hrml
+```html
 <!-- client/body.html -->
 <body>
   <meteor-bundled-js />
