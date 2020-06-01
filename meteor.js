@@ -278,7 +278,14 @@ module.exports = {
       }
 
       // write the index.html
-      return fs.writeFileAsync(path.join(outputPath, 'index.html'), content);
+      return fs.writeFileAsync(path.join(outputPath, 'index.html'), content).then(
+        () => fs.mkdirAsync(path.join(outputPath, 'sockjs'))
+      ).then(
+        () => fs.writeFileAsync(path.join(outputPath, 'sockjs/info'), '{"websocket": false}', { encoding: 'utf8' })
+      ).catch(() => {
+        console.error('sockjs/info not created or already exists');
+        return true;
+      });
     });
   },
   cleanUp(program) {
