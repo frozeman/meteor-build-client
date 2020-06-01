@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { print } = require('./helpers.js');
-const fs = require('fs');
+const fs = require('fs-extra');
 const pathLib = require('path');
 
 // CLI Options

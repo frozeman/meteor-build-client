@@ -30,6 +30,7 @@
   },
   "main": "main.js",
   "dependencies": {
+    "fs-extra": "^9.0.0",
     "bluebird": "^3.4.6",
     "buffered-spawn": "^3.3.2",
     "commander": "^5.1.0",

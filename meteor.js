@@ -1,6 +1,6 @@
 // MODULES
 const { print } = require('./helpers.js');
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const _ = require('underscore');
 const Q = require('bluebird');
@@ -98,13 +98,12 @@ module.exports = {
         const legacyDirs = ['/bundle/programs/web.browser.legacy', '/bundle/programs/web.browser.legacy/app'];
         const dataPaths = fs.lstatSync(path.join(buildPath, legacyDirs[0])).isDirectory() ? legacyDirs : modernDirs;
 
-        _.each(dataPaths, function(givenPath){
+        _.each(dataPaths, (givenPath) => {
           const clientPath = path.join(buildPath, givenPath);
           let rootFolder = fs.readdirSync(clientPath);
           rootFolder = _.without(rootFolder, 'app');
-
-          rootFolder.forEach( function (file) {
-            fs.renameSync(path.join(clientPath, file), path.join(outputPath, file));
+          rootFolder.forEach((file) => {
+            fs.copySync(path.join(clientPath, file), path.join(outputPath, file));
           });
         });
       } catch(e) {
@@ -180,10 +179,10 @@ module.exports = {
         // fix paths in the CSS file
         if(!_.isEmpty(files.css)) {
           _.each(files.css, (css, i) =>  {
-            var cssFile = fs.readFileSync(path.join(outputPath, css), {encoding: 'utf8'});
+            var cssFile = fs.readFileSync(path.join(outputPath, css), { encoding: 'utf8' });
             cssFile = cssFile.replace(/url\(\'\//g, `url('${program.path}`).replace(/url\(\//g, `url(${program.path}`);
             fs.unlinkSync(path.join(outputPath, css));
-            fs.writeFileSync(path.join(outputPath, css), cssFile, {encoding: 'utf8'});
+            fs.writeFileSync(path.join(outputPath, css), cssFile, { encoding: 'utf8' });
 
             files.css[i] = `${program.path}${css}`;
           });
@@ -268,7 +267,7 @@ module.exports = {
 
       // add Meteor.disconnect() when no server is given
       if (!program.url) {
-        scripts += '<script type="text/javascript">Meteor.disconnect();</script>';
+        scripts += '<script type="text/javascript">Meteor && Meteor.disconnect ? Meteor.disconnect() : void 0;</script>';
       }
 
       if (RE.scripts.template.test(content)) {
@@ -278,12 +277,14 @@ module.exports = {
       }
 
       // write the index.html
-      return fs.writeFileAsync(path.join(outputPath, 'index.html'), content).then(
-        () => fs.mkdirAsync(path.join(outputPath, 'sockjs'))
-      ).then(
-        () => fs.writeFileAsync(path.join(outputPath, 'sockjs/info'), '{"websocket": false}', { encoding: 'utf8' })
-      ).catch(() => {
-        console.error('sockjs/info not created or already exists');
+      return fs.writeFileAsync(path.join(outputPath, 'index.html'), content).then(() => {
+        if (!program.url) {
+          return fs.mkdirAsync(path.join(outputPath, 'sockjs'))
+            .then(() => fs.writeFileAsync(path.join(outputPath, 'sockjs/info'), '{"websocket": false}', { encoding: 'utf8' })).catch(() => {
+              print('sockjs/info not created or already exists');
+              return true;
+            });
+        }
         return true;
       });
     });
@@ -295,7 +296,12 @@ module.exports = {
         deleteFolderRecursive(path.join(buildPath, 'bundle'));
       }
 
-      fs.unlinkSync(path.join(outputPath, 'program.json'));
+      try {
+        fs.unlinkSync(path.join(outputPath, 'program.json'));
+      } catch (e){
+        print('FYI: Didn\'t unlink program.json; doesn\'t exist.');
+      }
+
       try{
         fs.unlinkSync(path.join(outputPath, 'head.html'));
       } catch (e){
