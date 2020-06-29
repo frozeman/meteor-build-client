@@ -16,10 +16,10 @@ npm install -g meteor-build-client
 
 ```shell
 // cd into your meteor app
-cd myApp
+cd /my/app
 
 // run meteor-build-client
-meteor-build-client ../myOutputFolder
+meteor-build-client ../output/directory
 ```
 
 ## Important notes:
@@ -48,7 +48,7 @@ meteor-build-client --help
 You can pass an additional settings file using the `--settings` or `-s` option:
 
 ```shell
-meteor-build-client ../myOutputFolder -s ../settings.json
+meteor-build-client ../output/directory -s ../settings.json
 ```
 
 **Note** Only the `public` property of that JSON file will be add to the `Meteor.settings` property.
@@ -58,7 +58,7 @@ meteor-build-client ../myOutputFolder -s ../settings.json
 Additionally you can set the `ROOT_URL` of your app using the `--url` or `-u` option:
 
 ```shell
-meteor-build-client ../myOutputFolder -u http://myserver.com
+meteor-build-client ../output/directory -u http://myserver.com
 ```
 
 If you pass `"default"`, your app will try to connect to the server where the application was served from. If this option was not set, it will set the server to `""` (empty string) and will add a `Meteor.disconnect()` after Meteor was loaded.
@@ -68,7 +68,7 @@ If you pass `"default"`, your app will try to connect to the server where the ap
 If you want to be able to start you app by simply opening the index.html (using the `file://` protocol), you need to link your files relative. You can do this by setting the `--path` or `-p` option:
 
 ```shell
-meteor-build-client ../myOutputFolder -p ""
+meteor-build-client ../output/directory -p ""
 ```
 
 The default path value is `"/"`.
