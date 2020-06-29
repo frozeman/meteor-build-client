@@ -170,6 +170,8 @@ For apache a `.htaccess` with `mod_rewrite` could look as follow:
 
 ### nginx:
 
+Use `try_files` and `error_page` to redirect all requests to non-existent files to `index.html`
+
 ```conf
 server {
   listen 80;
