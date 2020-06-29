@@ -135,13 +135,17 @@ module.exports = {
       try{
         head = fs.readFileSync(path.join(outputPath, 'head.html'), {encoding: 'utf8'});
       } catch(e) {
-        print('FYI: No <head> found in Meteor app...');
+        if (program.debug) {
+          print('FYI: No <head> found in Meteor app...');
+        }
       }
 
       try{
         body = fs.readFileSync(path.join(outputPath, 'body.html'), {encoding: 'utf8'});
       } catch(e) {
-        print('FYI: No <body> found in Meteor app...');
+        if (program.debug) {
+          print('FYI: No <body> found in Meteor app...');
+        }
       }
 
       // ADD HEAD
