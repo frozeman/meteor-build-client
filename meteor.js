@@ -310,19 +310,25 @@ module.exports = {
       try {
         fs.unlinkSync(path.join(outputPath, 'program.json'));
       } catch (e){
-        print('FYI: Didn\'t unlink program.json; doesn\'t exist.');
+        if (program.debug) {
+          print('FYI: Didn\'t unlink program.json; doesn\'t exist.');
+        }
       }
 
       try{
         fs.unlinkSync(path.join(outputPath, 'head.html'));
       } catch (e){
-        print('FYI: Didn\'t unlink head.html; doesn\'t exist.');
+        if (program.debug) {
+          print('FYI: Didn\'t unlink head.html; doesn\'t exist.');
+        }
       }
 
       try{
         fs.unlinkSync(path.join(outputPath, 'body.html'));
       } catch (e){
-        print('FYI: Didn\'t unlink body.html; doesn\'t exist.');
+        if (program.debug) {
+          print('FYI: Didn\'t unlink body.html; doesn\'t exist.');
+        }
       }
     });
   }
