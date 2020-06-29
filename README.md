@@ -98,9 +98,12 @@ Following Meteor's recommended usage of `<meteor-bundled-css />` and `<meteor-bu
 <!-- client/head.html -->
 <head>
   <meta charset="UTF-8">
+  <!-- recommended "fragment" to mark as JS-powered website for search engines -->
   <meta name="fragment" content="!">
 
   <title>My Meteor App</title>
+
+  <!-- recommended "preload" for CSS bundle file -->
   <link rel="preload" href="{{url-to-meteor-bundled-css}}" as="style">
   <meteor-bundled-css />
 </head>
