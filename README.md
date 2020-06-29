@@ -126,11 +126,11 @@ In order to connect to a Meteor servers, create DDP connection by using `DDP.con
 
 ```js
 // This Should be in both server and client in a lib folder
-DDPConnection = (Meteor.isClient) ? DDP.connect("http://localhost:3000/") : {};
+DDPConnection = (Meteor.isClient) ? DDP.connect('http://localhost:3000/') : {};
 
 // When creating a new collection on the client use:
 if(Meteor.isClient) {
-  posts = new Mongo.Collection("posts", DDPConnection);
+  posts = new Mongo.Collection('posts', DDPConnection);
 
   // set the new DDP connection to all internal packages, which require one
   Meteor.connection = DDPConnection;
@@ -139,7 +139,7 @@ if(Meteor.isClient) {
   Meteor.connection.subscribe('users');
 
   // And then you subscribe like this:
-  DDPConnection.subscribe("mySubscription");
+  DDPConnection.subscribe('mySubscription');
 }
 ```
 
