@@ -51,8 +51,7 @@ Q.try(function() {
   /**
    * Allow the user to decide whether or not they want to use the
    * meteor-build-client build or their own
-  */
-
+   */
   if(program.usebuild && fs.lstatSync(program.usebuild).isDirectory()) {
     print(`Using ${program.usebuild}`);
     print('Generating the index.html...');
