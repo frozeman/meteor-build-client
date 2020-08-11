@@ -6,7 +6,7 @@ ecmascript-runtime@0.7.0
 ecmascript-runtime-client@0.10.0
 ecmascript-runtime-server@0.9.0
 fetch@0.1.1
-frozeman:build-client@0.4.3
+frozeman:build-client@1.0.0
 inter-process-messaging@0.1.1
 meteor@1.9.3
 minifier-css@1.5.0

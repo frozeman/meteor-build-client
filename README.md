@@ -4,23 +4,29 @@
 
 # Meteor Build Client
 
-This tool builds and bundles the client part of a Meteor app with a simple index.html,
-so it can be hosted on any server or even loaded via the `file://` protocol.
+This tool builds and bundles the client part of a Meteor app with a simple `index.html`, so it can be hosted on any server or even loaded via the `file://` protocol.
 
 ## Installation
 
-    $ [sudo] npm install -g meteor-build-client
+```shell
+npm install -g meteor-build-client
+```
 
 ## Usage
 
-    // cd into your meteor app
-    $ cd myApp
+```shell
+// cd into your meteor app
+cd /my/app
 
-    // run meteor-build-client
-    $ meteor-build-client ../myOutputFolder
+// run meteor-build-client
+meteor-build-client ../output/directory
+```
 
-**Warning** the content of the output folder will be deleted before building the new output! So dont do things like
-`$ meteor-build-client /home`!
+## Important notes:
+
+- __Warning__: the content of the output folder will be deleted before building the new output! So don't do things like `meteor-build-client /home`!
+- __Do not use dynamic imports!__ e.g. `import('/eager/file');`;
+- By default this package link __legacy__ ES5 bundle build.
 
 ### Output
 
@@ -33,70 +39,86 @@ The content of the output folder could look as follows:
 
 For a list of options see:
 
-    $ meteor-build-client --help
+```shell
+meteor-build-client --help
+```
 
 ### Passing a settings.json
 
 You can pass an additional settings file using the `--settings` or `-s` option:
 
-    $ meteor-build-client ../myOutputFolder -s ../settings.json
+```shell
+meteor-build-client ../output/directory -s ../settings.json
+```
 
 **Note** Only the `public` property of that JSON file will be add to the `Meteor.settings` property.
-
 
 ### App URL
 
 Additionally you can set the `ROOT_URL` of your app using the `--url` or `-u` option:
 
-    $ meteor-build-client ../myOutputFolder -u http://myserver.com
+```shell
+meteor-build-client ../output/directory -u https://myserver.com
+```
 
-If you pass `"default"`, your app will try to connect to the server where the application was served from.
-
-If this option was not set, it will set the server to `""` (empty string) and will add a `Meteor.disconnect()` after Meteor was loaded.
+If you pass `"default"`, your app will try to connect to the server where the application was served from. If this option was not set, it will set the server to `""` (empty string) and will add a `Meteor.disconnect()` after Meteor was loaded.
 
 ### Absolute or relative paths
 
-If you want to be able to start you app by simply opening the index.html (using the `file://` protocol),
-you need to link your files relative. You can do this by setting the `--path` or `-p` option:
+If you want to be able to start you app by simply opening the index.html (using the `file://` protocol), you need to link your files relative. You can do this by setting the `--path` or `-p` option:
 
-    $ meteor-build-client ../myOutputFolder -p ""
+```shell
+meteor-build-client ../output/directory -p ""
+```
 
 The default path value is `"/"`.
 
 *Note* When set a path value, it will also replace this path in you Meteor CSS file, so that fonts etc link correctly.
 
-
 ### Using your own build folder
 
-If you want to use your own build folder by running `meteor build` yourself, specify the `--usebuild` flag and meteor-build-client will not run the meteor build command for you. It will expect that the build folder be located up a directory from the app folder (A sibling to /app, Meteor's default location). 
+To use pre-build Meteor application, built using `meteor build` command manually, specify the `--usebuild <path-to-build>` flag and `meteor-build-client` will not run the `meteor build` command.
 
-### Using custom templates
+### Recommended packages for client-only build
 
-If you want to provide a custom template for the initial HTML provide an HTML file with the `--template` or `-t` option:
+If you're building server-less standalone web application we recommend to replace `meteor-base` with `meteor` and `webapp` packages.
 
-    $ meteor-build-client ../myOutputFolder -t ../myTemplate.html
+```diff
+@@ .meteor/packages
+- meteor-base
++ meteor
++ webapp
+```
 
-The template file need to contain the following placholders: `{{> head}}`, `{{> css}}` and `{{> scripts}}`.
-The following example adds a simple loading text to the initial HTML file (Your app should later take care of removing the loading text):
+### Template
+
+Following Meteor's recommended usage of `<meteor-bundled-css />` and `<meteor-bundled-js/>` this tags will be replaced with links to generated CSS and JS files respectively. Optionally, use `{{url-to-meteor-bundled-css}}` as a placeholder for URL to generated CSS file. We encourage to use `static-html` (*for non-Blaze projects*) or `blaze-html-templates` (*for Blaze projects*) package for creating bare HTML template in your app, minimal example:
 
 ```html
-<!DOCTYPE html>
-<html>
-    <head>
-        {{> head}}
-        <link rel="stylesheet" type="text/css" href="/loadingScreen.css">
-    </head>
-    <body>
-        <h1>Loading...</h1>
+<!-- client/head.html -->
+<head>
+  <meta charset="UTF-8">
+  <!-- recommended "fragment" to mark as JS-powered website for search engines -->
+  <meta name="fragment" content="!">
 
-        {{> css}}
-        {{> scripts}}
-    </body>
-</html>
+  <title>My Meteor App</title>
+
+  <!-- recommended "preload" for CSS bundle file -->
+  <link rel="preload" href="{{url-to-meteor-bundled-css}}" as="style">
+  <meteor-bundled-css />
+</head>
 ```
-By linking a file from your `public` folder (e.g. `loadingScreen.css`) and moving the `{{> css}}` and `{{> scripts}}` placeholder to the end of the `<body>` tag,
-you can simply style your loading screen.
-Because the small CSS file (`loadingScreen.css`) and the body content will be loaded *before* the Meteor app script, the the user sees the nice Loading text.
+
+Where `<meteor-bundled-css />` will be replaced with `<link />` element to generated CSS file(s) and `{{url-to-meteor-bundled-css}}` will be replaced with URL to generated CSS file.
+
+```html
+<!-- client/body.html -->
+<body>
+  <meteor-bundled-js />
+</body>
+```
+
+Where `<meteor-bundled-js />` will be replaced with `<script />` element(s) to generated JS file(s).
 
 ## Connecting to a Meteor server
 
@@ -104,46 +126,52 @@ In order to connect to a Meteor servers, create DDP connection by using `DDP.con
 
 ```js
 // This Should be in both server and client in a lib folder
-DDPConnection = (Meteor.isClient) ? DDP.connect("http://localhost:3000/") : {};
+DDPConnection = (Meteor.isClient) ? DDP.connect('http://localhost:3000/') : {};
 
 // When creating a new collection on the client use:
 if(Meteor.isClient) {
-    posts = new Mongo.Collection("posts", DDPConnection);
+  posts = new Mongo.Collection('posts', DDPConnection);
 
-    // set the new DDP connection to all internal packages, which require one
-    Meteor.connection = DDPConnection;
-    Accounts.connection = Meteor.connection;
-    Meteor.users = new Mongo.Collection('users');
-    Meteor.connection.subscribe('users');
+  // set the new DDP connection to all internal packages, which require one
+  Meteor.connection = DDPConnection;
+  Accounts.connection = Meteor.connection;
+  Meteor.users = new Mongo.Collection('users');
+  Meteor.connection.subscribe('users');
 
-    // And then you subscribe like this:
-    DDPConnection.subscribe("mySubscription");   
+  // And then you subscribe like this:
+  DDPConnection.subscribe('mySubscription');
 }
 ```
 
 ## Making routing work on a non Meteor server
 
-To be able to open URLs and let them be handled by the client side JavaScript, you need to rewrite URLs on the server side, so they point always to your index.html.
+To be able to open URLs and let them be handled by the client side JavaScript, you need to rewrite URLs on the server side, so they point always to `index.html`
+
+### Apache
 
 For apache a `.htaccess` with `mod_rewrite` could look as follow:
+
 ```bash
 <IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
+  RewriteEngine On
+  RewriteBase /
 
-    # Always pass through requests for files that exist
-    # Per http://stackoverflow.com/a/7090026/223225
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule . - [L]
+  # Always pass through requests for files that exist
+  # Per http://stackoverflow.com/a/7090026/223225
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule . - [L]
 
-    # Send all other requests to index.html where the JavaScript router can take over
-    # and render the requested route
-    RewriteRule ^.*$ index.html [L]
+  # Send all other requests to index.html where the JavaScript router can take over
+  # and render the requested route
+  RewriteRule ^.*$ index.html [L]
 </IfModule>
 ```
 
-For nginx:
+### nginx:
+
+Use `try_files` and `error_page` to redirect all requests to non-existent files to `index.html`
+
 ```conf
 server {
   listen 80;
