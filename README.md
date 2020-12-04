@@ -1,10 +1,27 @@
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/frozeman/meteor-build-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-*Note: The meteor package `frozeman:build-client` is only a placeholder package, don't install.*
-
 # Meteor Build Client
 
-This tool builds and bundles the client part of a Meteor app with a simple `index.html`, so it can be hosted on any server or even loaded via the `file://` protocol.
+Builder and bundler for the client part of a Meteor application. As a result it would generate simple `index.html`, so it can be hosted on any server or even loaded via the `file://` protocol.
+
+## ToC:
+
+- [Installation](https://github.com/frozeman/meteor-build-client#installation)
+- [Important notes](https://github.com/frozeman/meteor-build-client#important-notes)
+- [Bundler output](https://github.com/frozeman/meteor-build-client#output)
+- [Usage and examples](https://github.com/frozeman/meteor-build-client#usage)
+  - [Pass `settings.json`](https://github.com/frozeman/meteor-build-client#passing-a-settingsjson)
+  - [Pass `ROOT_URL`](https://github.com/frozeman/meteor-build-client#app-url)
+  - [Use absolute or relative URLs](https://github.com/frozeman/meteor-build-client#absolute-or-relative-paths)
+  - [Use pre-build bundle](https://github.com/frozeman/meteor-build-client#using-your-own-build-folder)
+- [Tips'n tricks](https://github.com/frozeman/meteor-build-client#best-practices)
+  - [Recommended `.meteor/packages`](https://github.com/frozeman/meteor-build-client#recommended-packages-for-client-only-build)
+  - [Templating](https://github.com/frozeman/meteor-build-client#template)
+  - [Connect to server](https://github.com/frozeman/meteor-build-client#connecting-to-a-meteor-server)
+- [HTTP Server/Proxy usage](https://github.com/frozeman/meteor-build-client#making-routing-work-on-a-non-meteor-server)
+  - [Apache](https://github.com/frozeman/meteor-build-client#apache)
+  - [Nginx](https://github.com/frozeman/meteor-build-client#nginx)
+- Get help:
+  - [GitHub issues](https://github.com/frozeman/meteor-build-client/issues)
+  - [Gitter Chat](https://gitter.im/frozeman/meteor-build-client)
 
 ## Installation
 
@@ -12,35 +29,43 @@ This tool builds and bundles the client part of a Meteor app with a simple `inde
 npm install -g meteor-build-client
 ```
 
-## Usage
-
-```shell
-// cd into your meteor app
-cd /my/app
-
-// run meteor-build-client
-meteor-build-client ../output/directory
-```
-
 ## Important notes:
 
+- __The Meteor/Atmosphere package `frozeman:build-client` is just a placeholder package, there's no need to install it__;
 - __Warning__: the content of the output folder will be deleted before building the new output! So don't do things like `meteor-build-client /home`!
 - __Do not use dynamic imports!__ e.g. `import('/eager/file');`;
 - By default this package link __legacy__ ES5 bundle build.
 
-### Output
+## Output
 
 The content of the output folder could look as follows:
 
 - `index.html`
 - `a28817fe16898311635fa73b959979157e830a31.css`
 - `aeca2a21c383327235a08d55994243a9f478ed57.js`
-- `...` (other files from your "public" folder)
+- `...` (other files from project's `/public` directory)
 
-For a list of options see:
+## Usage
+
+List all available options and show docs:
 
 ```shell
 meteor-build-client --help
+```
+
+Usage examples:
+
+```shell
+# cd into your meteor app
+cd /my/app
+
+# run meteor-build-client
+meteor-build-client ../output/directory
+
+# build meteor app as usual
+meteor build ../build-directory --directory
+# bundle client-only assets with meteor-build-client
+meteor-build-client ../build-directory-client --url https://example.com --usebuild ../build-directory
 ```
 
 ### Passing a settings.json
@@ -61,7 +86,7 @@ Additionally you can set the `ROOT_URL` of your app using the `--url` or `-u` op
 meteor-build-client ../output/directory -u https://myserver.com
 ```
 
-If you pass `"default"`, your app will try to connect to the server where the application was served from. If this option was not set, it will set the server to `""` (empty string) and will add a `Meteor.disconnect()` after Meteor was loaded.
+By passing `"default"`, application will try to connect to the server from where the application was served. If this option was not set, it will set the server to `""` (empty string) and will add a `Meteor.disconnect()` after Meteor was loaded.
 
 ### Absolute or relative paths
 
@@ -78,6 +103,10 @@ The default path value is `"/"`.
 ### Using your own build folder
 
 To use pre-build Meteor application, built using `meteor build` command manually, specify the `--usebuild <path-to-build>` flag and `meteor-build-client` will not run the `meteor build` command.
+
+## Best practices
+
+Tips'n tricks using client bundle
 
 ### Recommended packages for client-only build
 
@@ -103,7 +132,7 @@ Following Meteor's recommended usage of `<meteor-bundled-css />` and `<meteor-bu
 
   <title>My Meteor App</title>
 
-  <!-- recommended "preload" for CSS bundle file -->
+  <!-- [optional] recommended "preload" for CSS bundle file -->
   <link rel="preload" href="{{url-to-meteor-bundled-css}}" as="style">
   <meteor-bundled-css />
 </head>
@@ -151,7 +180,7 @@ To be able to open URLs and let them be handled by the client side JavaScript, y
 
 For apache a `.htaccess` with `mod_rewrite` could look as follow:
 
-```bash
+```apacheconf
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -168,11 +197,11 @@ For apache a `.htaccess` with `mod_rewrite` could look as follow:
 </IfModule>
 ```
 
-### nginx:
+### Nginx
 
 Use `try_files` and `error_page` to redirect all requests to non-existent files to `index.html`
 
-```conf
+```nginxconf
 server {
   listen 80;
   listen [::]:80;
