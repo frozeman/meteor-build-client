@@ -56,7 +56,7 @@ meteor-build-client --help
 Usage examples:
 
 ```shell
-# cd into your meteor app
+# cd to meteor app
 cd /my/app
 
 # run meteor-build-client
@@ -70,17 +70,17 @@ meteor-build-client ../build-directory-client --url https://example.com --usebui
 
 ### Passing a settings.json
 
-You can pass an additional settings file using the `--settings` or `-s` option:
+Pass Meteor's `settings.json` settings file via `--settings` or `-s` option:
 
 ```shell
 meteor-build-client ../output/directory -s ../settings.json
 ```
 
-**Note** Only the `public` property of that JSON file will be add to the `Meteor.settings` property.
+__Note:__ Only the `public` property of that JSON file will be add to the `Meteor.settings` property.
 
 ### App URL
 
-Additionally you can set the `ROOT_URL` of your app using the `--url` or `-u` option:
+Set the `ROOT_URL` of the application via `--url` or `-u` option:
 
 ```shell
 meteor-build-client ../output/directory -u https://myserver.com
@@ -90,7 +90,7 @@ By passing `"default"`, application will try to connect to the server from where
 
 ### Absolute or relative paths
 
-If you want to be able to start you app by simply opening the index.html (using the `file://` protocol), you need to link your files relative. You can do this by setting the `--path` or `-p` option:
+To serve application via `file://` protocol (by opening the `index.html`) set `--path` or `-p` option to `""` (*empty string*). This would generate relative paths for assets across the application:
 
 ```shell
 meteor-build-client ../output/directory -p ""
@@ -98,7 +98,7 @@ meteor-build-client ../output/directory -p ""
 
 The default path value is `"/"`.
 
-*Note* When set a path value, it will also replace this path in you Meteor CSS file, so that fonts etc link correctly.
+__Note:__ "path" value will replace paths in generated CSS file. Use it to link fonts and other assets correctly.
 
 ### Using your own build folder
 
@@ -110,7 +110,7 @@ Tips'n tricks using client bundle
 
 ### Recommended packages for client-only build
 
-If you're building server-less standalone web application we recommend to replace `meteor-base` with `meteor` and `webapp` packages.
+When building server-less standalone web application we recommend to replace `meteor-base` with `meteor` and `webapp` packages.
 
 ```diff
 @@ .meteor/packages
@@ -167,18 +167,18 @@ if(Meteor.isClient) {
   Meteor.users = new Mongo.Collection('users');
   Meteor.connection.subscribe('users');
 
-  // And then you subscribe like this:
+  // Subscribe like this:
   DDPConnection.subscribe('mySubscription');
 }
 ```
 
 ## Making routing work on a non Meteor server
 
-To be able to open URLs and let them be handled by the client side JavaScript, you need to rewrite URLs on the server side, so they point always to `index.html`
+To enforce JavaScript routing, all requests should point to `index.html`. See below "rewrite" instructions for various http/proxy servers.
 
 ### Apache
 
-For apache a `.htaccess` with `mod_rewrite` could look as follow:
+Create `.htaccess` for Apache with `mod_rewrite` rules:
 
 ```apacheconf
 <IfModule mod_rewrite.c>
@@ -199,14 +199,15 @@ For apache a `.htaccess` with `mod_rewrite` could look as follow:
 
 ### Nginx
 
-Use `try_files` and `error_page` to redirect all requests to non-existent files to `index.html`
+Use `try_files` and `error_page` to redirect all requests to non-existent files to `index.html`. Static files will be served by nginx itself.
 
 ```nginxconf
 server {
   listen 80;
   listen [::]:80;
-  index index.html;
   server_name myapp.com;
+
+  index index.html;
   root /var/www/myapp;
 
   error_page 404 =200 /index.html;
