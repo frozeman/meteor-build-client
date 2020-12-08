@@ -80,7 +80,7 @@ module.exports = {
     return Q.try(function() {
       deleteFolderRecursive(buildPath);
 
-      var command = ['meteor', 'build', argPath, '--directory'];
+      const command = ['meteor', 'build', argPath, '--directory'];
       if (program.debug) {
         command.push('--debug');
       }
@@ -194,7 +194,7 @@ module.exports = {
         // fix paths in the CSS file
         if(!_.isEmpty(files.css)) {
           _.each(files.css, (css, i) =>  {
-            var cssFile = fs.readFileSync(path.join(outputPath, css), { encoding: 'utf8' });
+            let cssFile = fs.readFileSync(path.join(outputPath, css), { encoding: 'utf8' });
             cssFile = cssFile.replace(/url\(\'\//g, `url('${program.path}`).replace(/url\(\//g, `url(${program.path}`);
             fs.unlinkSync(path.join(outputPath, css));
             fs.writeFileSync(path.join(outputPath, css), cssFile, { encoding: 'utf8' });
@@ -231,7 +231,7 @@ module.exports = {
       }
 
       // ADD CSS
-      var css = [];
+      let css = [];
       _.each(files.css, (cssFile) => {
         css.push(`<link rel="stylesheet" type="text/css" href="${cssFile}">`);
       });
@@ -248,7 +248,7 @@ module.exports = {
       }
 
       // ADD the SCRIPT files
-      var scripts = ['__meteor_runtime_config__'];
+      let scripts = ['__meteor_runtime_config__'];
       _.each(files.js, (jsFile) => {
         scripts.push(`<script type="text/javascript" src="${jsFile}"></script>`);
       });
@@ -282,7 +282,7 @@ module.exports = {
 
       // add Meteor.disconnect() when no server is given
       if (!program.url) {
-        scripts += '<script type="text/javascript">Meteor && Meteor.disconnect ? Meteor.disconnect() : void 0;</script>';
+        scripts += '<script type="text/javascript">Meteor && Meteor.disconnect && Meteor.disconnect();</script>';
       }
 
       if (RE.scripts.template.test(content)) {
