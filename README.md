@@ -47,6 +47,27 @@ The content of the output folder could look as follows:
 
 ## Usage
 
+### Define where stylesheet links & script links will land
+`meteor-build-client` looks for the `<meteor-bundled-css />` tag in your `<head>` section and the `<meteor-bundled-js />` tag in the `<body>` section.
+
+Example:
+```html
+<head>
+  <!-- your header stuff... -->
+  <!-- then typically add the css link at the bottom of the head -->
+  <meteor-bundled-css />
+</head>
+
+<body>
+  <!-- typically want to load all the js code at the top -->
+  <meteor-bundled-js />
+  <!-- The rest of your body stuff... -->
+</body>
+```
+
+**Note**: this does not work for blaze projects.  For blaze projects you can only set `<meteor-bundled-css />` in your header.  It is invalid to set `<meteor-bundled-js />` in your body, simply leave it out and the right thing will happen.
+
+### Command line usage
 List all available options and show docs:
 
 ```shell
@@ -118,36 +139,6 @@ When building server-less standalone web application we recommend to replace `me
 + meteor
 + webapp
 ```
-
-### Template
-
-Following Meteor's recommended usage of `<meteor-bundled-css />` and `<meteor-bundled-js/>` this tags will be replaced with links to generated CSS and JS files respectively. Optionally, use `{{url-to-meteor-bundled-css}}` as a placeholder for URL to generated CSS file. We encourage to use `static-html` (*for non-Blaze projects*) or `blaze-html-templates` (*for Blaze projects*) package for creating bare HTML template in your app, minimal example:
-
-```html
-<!-- client/head.html -->
-<head>
-  <meta charset="UTF-8">
-  <!-- recommended "fragment" to mark as JS-powered website for search engines -->
-  <meta name="fragment" content="!">
-
-  <title>My Meteor App</title>
-
-  <!-- [optional] recommended "preload" for CSS bundle file -->
-  <link rel="preload" href="{{url-to-meteor-bundled-css}}" as="style">
-  <meteor-bundled-css />
-</head>
-```
-
-Where `<meteor-bundled-css />` will be replaced with `<link />` element to generated CSS file(s) and `{{url-to-meteor-bundled-css}}` will be replaced with URL to generated CSS file.
-
-```html
-<!-- client/body.html -->
-<body>
-  <meteor-bundled-js />
-</body>
-```
-
-Where `<meteor-bundled-js />` will be replaced with `<script />` element(s) to generated JS file(s).
 
 ## Connecting to a Meteor server
 
