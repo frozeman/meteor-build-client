@@ -148,9 +148,18 @@ module.exports = {
         }
       }
 
-      // ADD HEAD
-      content = content.replace(RE.templates.head, head);
-      content = content.replace(RE.templates.body, body);
+      // Add head and body
+      // if no head.html then put in the styles.template
+      // if no body.html then put in the scripts.template
+      //
+      // This will allow meteor-build-client to work without a user specified template.
+      // Required for blaze projects that do not produce a body.html file
+      content = !program.template && !head
+        ? content.replace(RE.templates.head, '{{> css}}')
+        : content.replace(RE.templates.head, head);
+      content =  !program.template && !body
+        ? content.replace(RE.templates.body, '{{> scripts}}')
+        : content.replace(RE.templates.body, body);
 
       // get the css and js files
       const files = {
