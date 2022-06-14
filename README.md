@@ -47,6 +47,8 @@ The content of the output folder could look as follows:
 
 ## Usage
 
+Things you need to know before exporting your project
+
 ### Define where stylesheet links & script links will land
 `meteor-build-client` looks for the `<meteor-bundled-css />` tag in your `<head>` section and the `<meteor-bundled-js />` tag in the `<body>` section.
 
