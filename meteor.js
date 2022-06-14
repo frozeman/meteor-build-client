@@ -181,10 +181,16 @@ module.exports = {
 
       _.each(prog.manifest, (item) => {
         if (item.type === 'js' && item.url) {
-          files.js.push(item.path.replace(RE.path.app, '') + '?hash=' + item.hash);
+          const file = item.path.replace(RE.path.app, '');
+          if (!files.js.includes(file)) {
+            files.js.push(file + '?hash=' + item.hash);
+          }
         } else if (item.type === 'css' && item.url) {
-          // for css file cases, do not append hash.
-          files.css.push(item.path.replace(RE.path.app, ''));
+          const file = item.path.replace(RE.path.app, '');
+          if (!files.css.includes(file)) {
+            // for css file cases, do not append hash.
+            files.css.push(file);
+          }
 
           if (item.url.includes('meteor_css_resource=true')) {
             primaryCSSfile = item.path.replace(RE.path.app, '');
