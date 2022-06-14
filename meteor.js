@@ -176,25 +176,24 @@ module.exports = {
       });
 
       let primaryCSSfile = files.css[0];
+      const json = fs.readFileSync(path.resolve(path.join(outputPath, 'program.json')), {encoding: 'utf-8'});
+      const prog = JSON.parse(json);
+
+      _.each(prog.manifest, (item) => {
+        if (item.type === 'js' && item.url) {
+          files.js.push(item.path.replace(RE.path.app, '') + '?hash=' + item.hash);
+        } else if (item.type === 'css' && item.url) {
+          // for css file cases, do not append hash.
+          files.css.push(item.path.replace(RE.path.app, ''));
+
+          if (item.url.includes('meteor_css_resource=true')) {
+            primaryCSSfile = item.path.replace(RE.path.app, '');
+          }
+        }
+      });
 
       // --debug case
       if (program.debug) {
-        const json = fs.readFileSync(path.resolve(path.join(outputPath, 'program.json')), {encoding: 'utf-8'});
-        const prog = JSON.parse(json);
-
-        _.each(prog.manifest, (item) => {
-          if (item.type === 'js' && item.url) {
-            files.js.push(item.path.replace(RE.path.app, '') + '?hash=' + item.hash);
-          } else if (item.type === 'css' && item.url) {
-            // for css file cases, do not append hash.
-            files.css.push(item.path.replace(RE.path.app, ''));
-
-            if (item.url.includes('meteor_css_resource=true')) {
-              primaryCSSfile = item.path.replace(RE.path.app, '');
-            }
-          }
-        });
-
         print('[DEBUG] Files:', files, {primaryCSSfile});
       }
 

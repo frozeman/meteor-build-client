@@ -67,7 +67,7 @@ Example:
 </body>
 ```
 
-**Note**: this does not work for blaze projects.  For blaze projects you can only set `<meteor-bundled-css />` in your header.  It is invalid to set `<meteor-bundled-js />` in your body, simply leave it out and the right thing will happen.
+**Note**: this does not work for blaze projects. For blaze projects you can only set `<meteor-bundled-css />` in your header.  It is invalid to set `<meteor-bundled-js />` in your body, simply leave it out and the right thing will happen.
 
 ### Command line usage
 List all available options and show docs:
