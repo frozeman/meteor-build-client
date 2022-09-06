@@ -64,11 +64,15 @@ const deleteFolderRecursive = (_path) => {
   if(fs.existsSync(_path)) {
     files = fs.readdirSync(_path);
     files.forEach((file) => {
-      const curPath = `${_path}/${file}`;
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
-        deleteFolderRecursive(curPath);
-      } else { // delete file
-        fs.unlinkSync(curPath);
+      try {
+        const curPath = `${_path}/${file}`;
+        if (fs.lstatSync(curPath).isDirectory()) { // recurse
+          deleteFolderRecursive(curPath);
+        } else { // delete file
+          fs.unlinkSync(curPath);
+        }
+      } catch (_e) {
+        // silence here
       }
     });
     fs.rmdirSync(_path);
@@ -109,13 +113,15 @@ module.exports = {
         const legacyDirs = ['/bundle/programs/web.browser.legacy', '/bundle/programs/web.browser.legacy/app'];
         const dataPaths = fs.lstatSync(path.join(buildPath, legacyDirs[0])).isDirectory() ? legacyDirs : modernDirs;
 
-        _.each(dataPaths, (givenPath) => {
+        dataPaths.forEach((givenPath) => {
           const clientPath = path.join(buildPath, givenPath);
-          let rootFolder = fs.readdirSync(clientPath);
-          rootFolder = _.without(rootFolder, 'app');
-          rootFolder.forEach((file) => {
-            fs.copySync(path.join(clientPath, file), path.join(outputPath, file));
-          });
+          if (fs.lstatSync(clientPath).isDirectory()) {
+            let rootFolder = fs.readdirSync(clientPath);
+            rootFolder = _.without(rootFolder, 'app');
+            rootFolder.forEach((file) => {
+              fs.copySync(path.join(clientPath, file), path.join(outputPath, file));
+            });
+          }
         });
       } catch(e) {
         print('[move()] Exception:', e);

@@ -1,0 +1,13 @@
+*.md
+.DS_Store
+.eslintcache
+.eslintrc
+.github
+.meteor
+.npm
+.meteorignore
+.versions
+.editorconfig
+node_modules
+npm-debug.log*
+package.js
