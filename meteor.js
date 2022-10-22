@@ -111,7 +111,8 @@ module.exports = {
       try {
         const modernDirs = ['/bundle/programs/web.browser', '/bundle/programs/web.browser/app'];
         const legacyDirs = ['/bundle/programs/web.browser.legacy', '/bundle/programs/web.browser.legacy/app'];
-        const dataPaths = fs.lstatSync(path.join(buildPath, legacyDirs[0])).isDirectory() ? legacyDirs : modernDirs;
+        const isModern = fs.lstatSync(path.join(buildPath, legacyDirs[0])).isDirectory() ? false : true;
+        const dataPaths = isModern ? modernDirs : legacyDirs;
 
         dataPaths.forEach((givenPath) => {
           const clientPath = path.join(buildPath, givenPath);
@@ -189,7 +190,7 @@ module.exports = {
         if (item.type === 'js' && item.url) {
           const file = item.path.replace(RE.path.app, '');
           if (!files.js.includes(file)) {
-            files.js.push(file + '?hash=' + item.hash);
+            files.js.push(`${file}?hash=${item.hash}`);
           }
         } else if (item.type === 'css' && item.url) {
           const file = item.path.replace(RE.path.app, '');
