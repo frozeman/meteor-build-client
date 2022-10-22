@@ -34,7 +34,7 @@ npm install -g meteor-build-client
 - __The Meteor/Atmosphere package `frozeman:build-client` is just a placeholder package, there's no need to install it__;
 - __Warning__: the content of the output folder will be deleted before building the new output! So don't do things like `meteor-build-client /home`!
 - __Do not use dynamic imports!__ e.g. `import('/eager/file');`;
-- By default this package link __legacy__ ES5 bundle build.
+- By default this package link __legacy__ ES5 bundle build; For ES6/Modern scripts build an app with `meteor build <path> --exclude-archs web.browser.legacy --directory` flag and pass it to `--usebuild <path>`, [see docs](https://github.com/frozeman/meteor-build-client#using-your-own-build-folder)
 
 ## Output
 
