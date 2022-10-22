@@ -6,6 +6,7 @@ const pathLib = require('path');
 
 // CLI Options
 const program = require('commander');
+const prompt = require('prompt');
 
 const Q = require('bluebird');
 const packageJson = require('./package.json');
@@ -21,6 +22,7 @@ program
   .option('-t, --template <file path>', 'Provide a custom index.html template. Use {{> head}}, {{> css}} and {{> scripts}} to place the meteor resources.')
   .option('-s, --settings <settings.json>', 'Set optional data for Meteor.settings in your application.')
   .option('-u, --url <url>', 'The Root URL of your app. If "default", Meteor will try to connect to the Server where it was served from. Default is: "" (empty string)')
+  .option('-y, --yci', 'Accept all questions and skip all warnings, use in CI/CD environments')
   .option('-b, --usebuild <path>', 'If this flag is present, meteor-build-client will skip the `meteor build` step and opt for using your manually built <path> or ../build folder by default.', false)
   .option('-D, --debug', 'Build in debug mode (don\'t minify, etc)')
   .option('-v, --verbose', 'Add optional verbose option.')
@@ -48,22 +50,42 @@ Q.try(function() {
     throw new Error(`The template file "${program.template}" doesn't exist or is not a valid template file`);
   }
 }).then(function() {
-  /**
-   * Allow the user to decide whether or not they want to use the
-   * meteor-build-client build or their own
-   */
-  if(program.usebuild && fs.lstatSync(program.usebuild).isDirectory()) {
-    print(`Using ${program.usebuild}`);
-    print('Generating the index.html...');
-
-    return meteor.move(pathLib.resolve(program.usebuild));
+  if (!program.yci) {
+    prompt.start();
+    return prompt.get({
+      properties: {
+        action: {
+          type: 'string',
+          description: `The content of the output folder (${process.argv[2]}) will be deleted! Y/n`,
+          message: 'Y or n',
+          default: 'n',
+          required: true
+        }
+      }
+    });
   }
-  print('Bundling Meteor app...');
 
-  return meteor.build(program).then(function(){
-    print('Generating the index.html...');
-    return meteor.move(pathLib.resolve(argPath));
-  });
+  return { action: 'Y' };
+}).then(function(result) {
+  if (result.action === 'Y') {
+    /**
+     * Allow the user to decide whether or not they want to use the
+     * meteor-build-client build or their own
+     */
+    if(program.usebuild && fs.lstatSync(program.usebuild).isDirectory()) {
+      print(`Using ${program.usebuild}`);
+      print('Generating the index.html...');
+      return meteor.move(pathLib.resolve(program.usebuild));
+    }
+
+    print('Bundling Meteor app...');
+    return meteor.build(program).then(function() {
+      print('Generating the index.html...');
+      return meteor.move(pathLib.resolve(argPath));
+    });
+  }
+
+  throw new Error('Cancelled');
 }).then(function() {
   return meteor.addIndexFile(program);
 }).then(function() {
